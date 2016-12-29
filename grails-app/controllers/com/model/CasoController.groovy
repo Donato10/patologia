@@ -436,6 +436,10 @@ class CasoController {
 		return date.getTime()
 	}
 
+	def buscador() {
+		render view:"buscador"
+	}
+
 	def buscadorDePacientes() {
 
 		User current = User.findByUsername(SecurityUtils.getSubject().getPrincipal())
