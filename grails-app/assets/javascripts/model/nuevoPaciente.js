@@ -1,5 +1,6 @@
 	function guardarPaciente() {
 		$("#btnSave1").html('<i class="fa fa-spin fa-spinner"></i>')
+		$("#btnSave1").prop('disabled', true);
 		if (document.getElementById("fechaDeNacimiento").value.trim() == ""){
 			var anularFecha = true
 		}
@@ -24,6 +25,7 @@
 		var observaciones = $('#comentarios').val().trim();
 		if(fecha_de_nacimiento!="" && !isValidDate(fecha_de_nacimiento)){
 			$("#btnSave1").html('Listo, guardar')
+			$("#btnSave1").prop('disabled', false);
 			$('#errorMessage').html('No ingresaste una fecha válida el formato debe corresponder a <b>dd/mm/aaaa</b>')
 			$('#errorModal').modal('show')
 			return
@@ -63,18 +65,21 @@
 				async : true,
 				success : function(data, textStatus) {
 					$("#btnSave1").html('Listo, guardar')
+					$("#btnSave1").prop('disabled', false);
 					$('#successMessage').html("El paciente se ha registrado exitosamente!")
 					$('#successModal').modal('show')
 					
 				},
 				error : function(status, text, result, xhr) {
 					$("#btnSave1").html('Listo, guardar')
+					$("#btnSave1").prop('disabled', false);
 					$('#errorMessage').html(status.responseText)
 					$('#errorModal').modal('show')
 				}
 			});
 		} else {
 			$("#btnSave1").html('Listo, guardar')
+			$("#btnSave1").prop('disabled', false);
 			$('#errorMessage').html('Debes completar todos los campos marcados con <b style="color:red">*</b>')
 			$('#errorModal').modal('show')
 
@@ -116,4 +121,3 @@
 	};
 
 
-	

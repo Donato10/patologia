@@ -1,7 +1,8 @@
 
 
 function guardarCaso() {
-
+	$("#btnSave1").html('<i class="fa fa-spin fa-spinner"></i>')
+	$("#btnSave1").prop('disabled', true);
 	var tipoDeCaso = document.getElementById("tipoDeCaso").value
 	var documentoDeIdentidad = $('#documentoDeIdentidad').val();
 	var servicio = document.getElementById("servicios").value
@@ -53,13 +54,34 @@ function guardarCaso() {
 			url : "registrarCaso",
 			async : true,
 			success : function(data, textStatus) {
+				$("#btnSave1").html('Listo, guardar')
+				$("#btnSave1").prop('disabled', false);
+				resetFormulario()
+				
 				$('#successMessage').html("Se registró el caso correctamente con el identificador <b>"+data+"</b>")
 				$('#successModal').modal('show')
 			},
-			error : function(XMLHttpRequest, textStatus, errorThrown) {
+			error : function(status, text, result, xhr) {
+				$("#btnSave1").html('Listo, guardar')
+				$("#btnSave1").prop('disabled', false);
+				$('#errorMessage').html(status.responseText)
+				$('#errorModal').modal("show")
 
 			}
 		});
+}
+
+
+function resetFormulario(){
+	$('#documentoDeIdentidad').val("");
+	$('#departamentoDeResidencia').val("--")
+	$("#departamentoDeResidencia").change()
+	$("#ciudadDeResidencia").val("--")
+	$("#materialRemitido").val("--")
+	$("#historiaClinica").val("")
+	$("#dxClinico").val("--")
+	validar()
+	revisarDocumento()
 }
 
 function cargarCiudades() {

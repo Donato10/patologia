@@ -159,7 +159,7 @@
 					<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
 						<label for="">Médico remitente<b style="color:red">*</b></label> 
 						<select id="medicoRemitente" name="medicoRemitente" class="form-control">
-							<option selected>--</option>
+							<option value="--" selected>--</option>
 							<script>
 								jQuery.ajax({
 									type : 'POST',
@@ -182,7 +182,7 @@
 					<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
 						<label for="">Material remitido<b style="color:red">*</b></label> 
 						<select id="materialRemitido" name="materialRemitido" class="form-control">
-							<option selected>--</option>
+							<option value="--" selected>--</option>
 							<script>
 								jQuery.ajax({
 									type : 'POST',
@@ -203,7 +203,7 @@
 
 					<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
 						<label for="">Departamento de residencia<b style="color:red">*</b></label> <select id="departamentoDeResidencia" name="departamentoDeResidencia" class="form-control">
-							<option selected>--</option>
+							<option value="--" selected>--</option>
 							<script>
 								console.log("cargando departamentos");
 								jQuery.ajax({
@@ -225,7 +225,7 @@
 					<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
 						<label for="">Ciudad de residencia<b style="color:red">*</b></label>
 						<select id="ciudadDeResidencia" name="ciudadDeResidencia" class="form-control">
-							<option selected>--</option>
+							<option  value="--" selected>--</option>
 						</select>
 						</br>
 					</div>
@@ -233,7 +233,7 @@
 					<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
 						<label for="">Diagnóstico clínico<b style="color:red">*</b></label>
 						<select id="dxClinico"name="dxClinico" class="form-control">
-							<option selected>--</option>
+							<option value="--" selected>--</option>
 							<script>
 								jQuery.ajax({
 									type : 'POST',
