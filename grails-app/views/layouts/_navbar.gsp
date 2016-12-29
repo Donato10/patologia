@@ -6,8 +6,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Gentelella Alela! | </title>
+    <asset:link rel="shortcut icon" href="logos/logo.ico" type="image/x-icon"/>
+    <title>Sys path </title>
 
       <!-- Bootstrap -->
     <asset:stylesheet src="bootstrap/dist/css/bootstrap.min.css" />
@@ -33,7 +33,8 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
+              <g:link controller="user" action="index" class="site_title" style="margin-top:5px">
+                <asset:image src="logos/logo.png" alt="avatar" style="height:43px; width:auto; margin: 5px 10px 0px 0px; padding: 0px" class="img-circle profile_img"/><span>Syspath</span></g:link>
             </div>
 
             <div class="clearfix"></div>
@@ -41,7 +42,7 @@
             <!-- menu profile quick info -->
             <div class="profile clearfix">
               <div class="profile_pic">
-                <asset:image src="avatars/avatar.png" alt="..." class="img-circle profile_img"/>
+                <asset:image src="avatars/avatar.png" alt="avatar" class="img-circle profile_img"/>
               </div>
               <div class="profile_info">
                 <span>Bienvenido,</span>

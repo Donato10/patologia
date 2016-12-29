@@ -6,14 +6,12 @@ function validar() {
 
 	var errorCounter = 0;
 	var serviciosInput = document.getElementById("servicios");
-	var patologoAsignadoInput = document
-			.getElementById("patologoAsignadoAlCaso")
+	var patologoAsignadoInput = document.getElementById("patologoAsignadoAlCaso")
 	var ipsInput = document.getElementById("ips")
 	var epsInput = document.getElementById("eps")
 	var medicoRemitenteInput = document.getElementById("medicoRemitente")
 	var materialRemitidoInput = document.getElementById("materialRemitido")
-	var departamentoDeResidenciaInput = document
-			.getElementById("departamentoDeResidencia")
+	var departamentoDeResidenciaInput = document.getElementById("departamentoDeResidencia")
 	var ciudadDeResidenciaInput = document.getElementById("ciudadDeResidencia")
 	var dxClinicoInput = document.getElementById("dxClinico")
 	var patologoMacroInput = document.getElementById("patologoMacro")
@@ -25,7 +23,7 @@ function validar() {
 	
 	
 	
-	if (document.getElementById("tipoDeCaso").value == "Citología") {
+	if (document.getElementById("tipoDeCaso").value == "Citologia") {
 
 		if (citologoInput.value == "--") {
 			citologoInput.style.border = "1px solid #ff0000";

@@ -41,18 +41,18 @@ class SecretariaController {
 			if( params.anularFecha== "true"){
 				System.out.println("se debe anular la fecha")
 				Paciente nuevoPaciente = new Paciente(
-					numeroDeIdentificacion : params.numeroDeIdentificacion?params.numeroDeIdentificacion:"",
-					regimenDeSalud : params.regimen?params.regimen:"",
-					primerNombre: params.primerNombre?params.primerNombre:"",
-					segundoNombre: params.segundoNombre?params.segundoNombre:"",
-					primerApellido: params.primerApellido?params.primerApellido:"",
-					segundoApellido: params.segundoApellido?params.segundoApellido:"",
-					direccion: params.direccion?params.direccion:"",
+					numeroDeIdentificacion : params.numeroDeIdentificacion?params.numeroDeIdentificacion.trim():"",
+					regimenDeSalud : params.regimen?params.regimen.trim():"",
+					primerNombre: params.primerNombre?params.primerNombre.trim():"",
+					segundoNombre: params.segundoNombre?params.segundoNombre.trim():"",
+					primerApellido: params.primerApellido?params.primerApellido.trim():"",
+					segundoApellido: params.segundoApellido?params.segundoApellido.trim():"",
+					direccion: params.direccion?params.direccion.trim():"",
 					tipoDeIdentificacion: params.tipoDeId,
-					observaciones: params.observaciones?params.observaciones:"",
-					telefonoCelular: params.telefonoCelular?params.telefonoCelular:"",
-					telefonoFijo: params.telefonoFijo?params.telefonoFijo:"",
-					email: params.email!=null?params.email:"",
+					observaciones: params.observaciones?params.observaciones.trim():"",
+					telefonoCelular: params.telefonoCelular?params.telefonoCelular.trim():"",
+					telefonoFijo: params.telefonoFijo?params.telefonoFijo.trim():"",
+					email: params.email!=null?params.email.trim():"",
 					fechaDeNacimiento:  null,
 					estadoCivil: params.estadoCivil,
 					sexo: params.sexo,
@@ -73,19 +73,19 @@ class SecretariaController {
 			}
 			else{
 				Paciente nuevoPaciente = new Paciente(
-						numeroDeIdentificacion : params.numeroDeIdentificacion?params.numeroDeIdentificacion:"",
-						regimenDeSalud : params.regimen?params.regimen:"",
-						primerNombre: params.primerNombre?params.primerNombre:"",
-						segundoNombre: params.segundoNombre?params.segundoNombre:"",
-						primerApellido: params.primerApellido?params.primerApellido:"",
-						segundoApellido: params.segundoApellido?params.segundoApellido:"",
-						direccion: params.direccion?params.direccion:"",
+						numeroDeIdentificacion : params.numeroDeIdentificacion?params.numeroDeIdentificacion.trim():"",
+						regimenDeSalud : params.regimen?params.regimen.trim():"",
+						primerNombre: params.primerNombre?params.primerNombre.trim():"",
+						segundoNombre: params.segundoNombre?params.segundoNombre.trim():"",
+						primerApellido: params.primerApellido?params.primerApellido.trim():"",
+						segundoApellido: params.segundoApellido?params.segundoApellido.trim():"",
+						direccion: params.direccion?params.direccion.trim():"",
 						tipoDeIdentificacion: params.tipoDeId,
-						observaciones: params.observaciones?params.observaciones:"",
-						telefonoCelular: params.telefonoCelular?params.telefonoCelular:"",
-						telefonoFijo: params.telefonoFijo?params.telefonoFijo:"",
-						email: params.email!=null?params.email:"",
-						fechaDeNacimiento:  Date.parse('yyyy-MM-dd', params.fechaDeNacimiento),
+						observaciones: params.observaciones?params.observaciones.trim():"",
+						telefonoCelular: params.telefonoCelular?params.telefonoCelular.trim():"",
+						telefonoFijo: params.telefonoFijo?params.telefonoFijo.trim():"",
+						email: params.email!=null?params.email.trim():"",
+						fechaDeNacimiento:  Date.parse('dd/MM/yyyy', params.fechaDeNacimiento),
 						estadoCivil: params.estadoCivil,
 						sexo: params.sexo,
 						profesion : params.profesion )
@@ -108,47 +108,45 @@ class SecretariaController {
 
 
 	def cargarServicios(){
-		render Servicio.getAll() as JSON
+		render Servicio.list(sort:"nombre", order:"asc") as JSON
 	}
 
 	def cargarPatologos(){
-		render PatologoProfesional.getAll() as JSON
+		render PatologoProfesional.list(sort:"nombres", order:"asc") as JSON
 	}
 	def cargarIPS(){
-		render IPS.getAll() as JSON
+		render IPS.list(sort:"razonSocial", order:"asc") as JSON
 	}
 	def cargarEPS(){
-		render EPS.getAll() as JSON
+		render EPS.list(sort:"nombre", order:"asc") as JSON
 	}
 	def cargarDepartamentos(){
 
-		render Ciudad.getAll().unique{ it.departamento } as JSON
+		render Ciudad.getAll().unique{ it.departamento }.sort{it.departamento} as JSON
 	}
 	def cargarCiudades(){
 		render Ciudad.findAllByDepartamento(params.departamento) as JSON
 	}
 	def cargarMedicoR(){
-		render MedicoRemitente.getAll() as JSON
+		render MedicoRemitente.list(sort:"nombre", order:"asc") as JSON
 	}
 	def cargarMaterialRemitido(){
-		render MaterialRemitido.getAll() as JSON
+		render MaterialRemitido.list(sort:"nombreDelMaterial", order:"asc") as JSON
 	}
 	def cargarDxClinicos(){
-		render MoldeDiagnosticoClinico.getAll() as JSON
+		render MoldeDiagnosticoClinico.list(sort:"nombre", order:"asc") as JSON
 	}
 	def cargarResidentes(){
-		render Residente.getAll() as JSON
+		render Residente.list(sort:"nombres", order:"asc") as JSON
 	}
 	def cargarCitologos(){
-		render Citologo.getAll() as JSON
+		render Citologo.list(sort:"nombres", order:"asc") as JSON
 	}
 
 
 
 	def registrarCaso(){
-		print ("hay "+ Citologia.getAll().size()+ " citologías")
-		print ("hay "+ Quirurgico.getAll().size()+ " quirurgicos")
-		print ("hay "+ Citometria.getAll().size()+ " citometria")
+		
 		System.out.println(params)
 		Paciente p
 		Servicio servicio
@@ -165,16 +163,15 @@ class SecretariaController {
 		Patologo patologoMicro
 		Patologo patologoMacro
 		Citologo citologo
-
 		String idCaso
 
 
 		try{
 			if(!params.citologo.equals("--")){
-
 				citologo= Citologo.get(params.citologo)
 			}
 			p = Paciente.findByNumeroDeIdentificacion(params.numeroDeIdentificacion)
+
 			servicio = Servicio.get(params.servicio)
 			ips = IPS.get(params.ips)
 			eps = EPS.get(params.eps)
@@ -182,7 +179,7 @@ class SecretariaController {
 			materialRemitido = MaterialRemitido.get(params.materialRemitido)
 			historiaClinica = params.historiaClinica
 			ciudad = Ciudad.findByCiudadAndDepartamento(params.ciudadDeResidencia, params.departamentoDeResidencia)
-			fechaDeRadicado = parseDate(params.fechaDeRadicado)
+			fechaDeRadicado = Date.parse('dd/MM/yyyy',params.fechaDeRadicado)
 			diagnosticoClinico = MoldeDiagnosticoClinico.get(params.dxClinico).nombre
 			patologoAsignado = PatologoProfesional.get(params.patologoAsignado)
 			estadoDelCaso = "Registrado"
@@ -208,43 +205,54 @@ class SecretariaController {
 					patologoMacro = PatologoProfesional.get(params.patologoMacro.substring(0,params.patologoMacro.indexOf(",")))
 				}
 			}
+
+			println "pasa el primer try **************************"
 		}
 		catch(Exception e){
-			e.printStackTrace();
+			println e.getMessage()
+			render status:400, text:e.getMessage()
+			return
 		}
 
-		if(params.tipoDeCaso.equals("Citología")){
-
-
-
+		if(params.tipoDeCaso.equals("Citologia")){
+			def nuevaCitologia
 			try{
 
-				Citologia nuevaCitologia = new Citologia(paciente: p, servicio: servicio, ips: ips, eps: eps,
+				nuevaCitologia = new Citologia(paciente: p, servicio: servicio, ips: ips, eps: eps,
 				medicoRemitente: medicoRemitente, materialRemitido: materialRemitido, historiaClinica: historiaClinica,
 				ciudad:ciudad, fechaDeRadicado: fechaDeRadicado, diagnosticoClinico: diagnosticoClinico,
 				patologoResponsable: patologoAsignado, estadoDelCaso: estadoDelCaso, idCaso : "1", citologo: citologo)
 				def year = Calendar.getInstance().get(Calendar.YEAR);
-				idCaso = ips.sigla+"-CG-"+ year+ "-" + (Citologia.getAll().size()+1)
+				def lastCitologia = Citologia.list(sort:"id", order:"desc", max:1)? Citologia.list(sort:"id", order:"desc", max:1)[0]:null
+				def consecutivo = lastCitologia?Integer.parseInt(lastCitologia.idCaso.substring(lastCitologia.idCaso.lastIndexOf("-")+1))+1:"1"
+				
+				idCaso = ips.sigla.trim()+"-CG-"+ year+ "-" + consecutivo
 				System.out.println(idCaso)
 				nuevaCitologia.setIdCaso(idCaso)
 				nuevaCitologia.save(flush:true)
 			}
 			catch(Exception e){
-				System.out.println("Hubo un error  "+ e)
+				System.out.println("Hubo un error  "+ e.getMessage())
+				render status:400, text:e.getMessage()
 			}
 			System.out.println("Es una citología")
-			render "Es una citología"
+			render nuevaCitologia.idCaso
+			return
 		}
-		if(params.tipoDeCaso.equals("Citometría")){
+		if(params.tipoDeCaso.equals("Citometria")){
+			def nuevaCitometria
 			try{
 
-				Citometria nuevaCitometria = new Citometria(paciente: p, servicio: servicio, ips: ips, eps: eps,
+				nuevaCitometria = new Citometria(paciente: p, servicio: servicio, ips: ips, eps: eps,
 				medicoRemitente: medicoRemitente, materialRemitido: materialRemitido, historiaClinica: historiaClinica,
 				ciudad:ciudad, fechaDeRadicado: fechaDeRadicado, diagnosticoClinico: diagnosticoClinico,
 				patologoResponsable: patologoAsignado, estadoDelCaso: estadoDelCaso, idCaso : "1",
 				patologoResponsableDeLaMacroDescripcion: patologoMacro, patologoResponsableDeLaMicroDescripcion:patologoMicro)
 				def year = Calendar.getInstance().get(Calendar.YEAR);
-				idCaso = ips.sigla+"-CT-"+ year+ "-" + (Citometria.getAll().size()+1)
+				def lastCitometria = Citometria.list(sort:"id", order:"desc", max:1)? Citometria.list(sort:"id", order:"desc", max:1)[0]:null
+				def consecutivo = lastCitometria?Integer.parseInt(lastCitometria.idCaso.substring(lastCitometria.idCaso.lastIndexOf("-")+1))+1:"1"
+				
+				idCaso = ips.sigla.trim()+"-CT-"+ year+ "-" + consecutivo
 				System.out.println(idCaso)
 				nuevaCitometria.setIdCaso(idCaso)
 
@@ -252,59 +260,69 @@ class SecretariaController {
 			}
 			catch(Exception e){
 				System.out.println("Hubo un error  "+ e)
+				render status:400, text:e.getMessage()
+				return
 			}
 
 			System.out.println("Es una citometría")
-			render "Es una citometria"
+			render nuevaCitometria.idCaso
 		}
-		if(params.tipoDeCaso.equals("Quirúrgico")){
-
+		if(params.tipoDeCaso.equals("Quirurgico")){
+			def nuevoQuirurgico
 			try{
-				Quirurgico nuevoQuirurgico = new Quirurgico(paciente: p, servicio: servicio, ips: ips, eps: eps,
+				nuevoQuirurgico = new Quirurgico(paciente: p, servicio: servicio, ips: ips, eps: eps,
 				medicoRemitente: medicoRemitente, materialRemitido: materialRemitido, historiaClinica: historiaClinica,
 				ciudad:ciudad, fechaDeRadicado: fechaDeRadicado, diagnosticoClinico: diagnosticoClinico,
 				patologoResponsable: patologoAsignado, estadoDelCaso: estadoDelCaso, idCaso : "1",
 				patologoResponsableDeLaMacroDescripcion: patologoMacro, patologoResponsableDeLaMicroDescripcion:patologoMicro)
 				def year = Calendar.getInstance().get(Calendar.YEAR);
-				idCaso = ips.sigla+"-QR-"+ year+ "-" + (Quirurgico.getAll().size()+1)
+				def lastQuirurgico = Quirurgico.list(sort:"id", order:"desc", max:1)? Quirurgico.list(sort:"id", order:"desc", max:1)[0]:null
+				def consecutivo = lastQuirurgico?Integer.parseInt(lastQuirurgico.idCaso.substring(lastQuirurgico.idCaso.lastIndexOf("-")+1))+1:"1"
+				
+				idCaso = ips.sigla.trim()+"-QR-"+ year+ "-" + consecutivo
 				System.out.println(idCaso)
 				nuevoQuirurgico.setIdCaso(idCaso)
 				nuevoQuirurgico.save(flush:true)
 			}
 			catch(Exception e){
 				System.out.println("Hubo un error  "+ e)
+				render status:400, text:e.getMessage()
+
 			}
 			System.out.println("Es un Quirurgico")
-			render "Es una quirurgico"
+			render nuevoQuirurgico.idCaso
+			return
 		}
 		if(params.tipoDeCaso.equals("Necropsia")){
+			def nuevaNecropsia
 			try{
 
-				Necropsia nuevaNecropsia = new Necropsia(paciente: p, servicio: servicio, ips: ips, eps: eps,
+				nuevaNecropsia = new Necropsia(paciente: p, servicio: servicio, ips: ips, eps: eps,
 				medicoRemitente: medicoRemitente, materialRemitido: materialRemitido, historiaClinica: historiaClinica,
 				ciudad:ciudad, fechaDeRadicado: fechaDeRadicado, diagnosticoClinico: diagnosticoClinico,
 				patologoResponsable: patologoAsignado, estadoDelCaso: estadoDelCaso, idCaso : "1",
 				patologoResponsableDeLaMacroDescripcion: patologoMacro, patologoResponsableDeLaMicroDescripcion:patologoMicro)
 				def year = Calendar.getInstance().get(Calendar.YEAR);
-				idCaso = ips.sigla+"-NE-"+ year+ "-" +(Necropsia.getAll().size()+1)
+				def lastNecropsia = Necropsia.list(sort:"id", order:"desc", max:1)? Necropsia.list(sort:"id", order:"desc", max:1)[0]:null
+				def consecutivo = lastNecropsia?Integer.parseInt(lastNecropsia.idCaso.substring(lastNecropsia.idCaso.lastIndexOf("-")+1))+1:"1"
+				idCaso = ips.sigla.trim()+"-NE-"+ year+ "-" +consecutivo
 				System.out.println(idCaso)
 				nuevaNecropsia.setIdCaso(idCaso)
 
 				nuevaNecropsia.save(flush:true)
 			}
 			catch(Exception e){
-				System.out.println("Hubo un error  "+ e)
+				System.out.println("Hubo un error  "+ e.getMessage())
+				render status:400, text:e.getMessage()
 			}
-
 			System.out.println("Es una necropsia")
-			render "Es una necropsia"
+			render nuevaNecropsia.idCaso
 		}
 	}
 
 
 
 	def revisarFechaDeNacimiento(){
-
 		Paciente p = Paciente.findByNumeroDeIdentificacion( params.numeroDeDocumento)
 
 		if(p!=null){

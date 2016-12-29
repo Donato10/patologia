@@ -73,8 +73,8 @@
                 </div>
                 <br />
                 <div>
-                  <h1>Tablero de control</h1>
-                  <h1><asset:image src="logos/Logo_QV_Azul.png" height="50px"/></h1>
+                  <h1>Syspath</h1>
+                  <h1><asset:image src="logos/logo.png" style="height:130px"/></h1>
                   <p>©2016 All Rights Reserved.</p>
                 </div>
               </div>

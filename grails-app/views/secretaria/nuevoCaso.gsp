@@ -10,17 +10,17 @@
 					<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
 						<label for="">Tipo de caso<b style="color:red">*</b></label> 
 						<select id="tipoDeCaso" name="tipoDeCaso" class="form-control">
-							<option selected>Quirúrgico</option>
-							<option>Citometría</option>
-							<option>Necropsia</option>
-							<option>Citología</option>
+							<option value="Quirurgico" selected>Quirúrgico</option>
+							<option value="Citometria">Citometría</option>
+							<option value="Necropsia">Necropsia</option>
+							<option value="Citologia">Citología</option>
 						</select>
 						<br/>
 					</div>
 
 					<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
 						<label for="">Fecha de radicado<b style="color:red">*</b></label>
-						<input required="" type="date" class="form-control" placeholder="dd/mm/aaaa"  id="fechaDeRadicado" value="${today.format('yyyy-MM-dd')}" max="${today.format('yyyy-MM-dd')}"/>
+						<input required="" type="text" class="form-control" placeholder="dd/mm/aaaa"  id="fechaDeRadicado" />
 						<br/>
 					</div>
 
@@ -35,7 +35,7 @@
 						</div>
 						<div id="fechaDeNacimientoBlock">
 							<div class="input-append" id="d2">
-								<input type="text" id="fechaDeNacimiento" class="form-control"  placeholder="dd/mm/aaaa" onfocus="(this.type='date')"> <span class="add-on"><i class="icon-th"></i></span>
+								<input type="text" id="fechaDeNacimiento" class="form-control"  placeholder="dd/mm/aaaa"> <span class="add-on"><i class="icon-th"></i></span>
 							</div>
 							<button type="button" id="cambiarAEdadButton" class="btn btn-primary pull-right" onclick="cambiarAEdad()" style="margin-top:10px">Cambiar a edad
 							</button>
@@ -470,7 +470,7 @@
 			$("#tipoDeCaso").change(function() {
 
 				validar();
-				if (document.getElementById("tipoDeCaso").value == "Citología") {
+				if (document.getElementById("tipoDeCaso").value == "Citologia") {
 					document.getElementById("labelPatologoMacro").style.display = "none"
 					document.getElementById("labelPatologoMicro").style.display = "none"
 					document.getElementById("patologoMacro").style.display = "none"
@@ -487,6 +487,93 @@
 				}
 			});
 		});
+	</script>
+
+	<script type="text/javascript">
+	$(document).ready(function() {
+        $('#fechaDeNacimiento').daterangepicker({
+        	autoUpdateInput: false,
+        	singleDatePicker: true,
+		    "showDropdowns": true,
+		    "maxDate": "${today.format('dd/MM/yyyy')}",
+        	calender_style: "picker_4",
+        	"locale": {
+		        "format": "DD/MM/YYYY",
+		        "separator": " - ",
+		        "applyLabel": "Aceptar",
+		        "cancelLabel": "Cancelar",
+		        "weekLabel": "S",
+		        "daysOfWeek": [
+		            "Do",
+		            "Lu",
+		            "Ma",
+		            "Mi",
+		            "Ju",
+		            "Vi",
+		            "Sa"
+		        ],
+		        "monthNames": [
+		            "Enero",
+		            "Febrero",
+		            "Marzo",
+		            "Abril",
+		            "Mayo",
+		            "Junio",
+		            "Julio",
+		            "Agosto",
+		            "Septiembre",
+		            "Octubre",
+		            "Noviembre",
+		            "Diciembre"
+		        ],
+	    	},
+        }, function(start, end, label) {
+        	$("#fechaDeNacimiento").val(start.format('MM/DD/YYYY'));
+        });
+      });
+
+
+	 $(document).ready(function() {
+        $('#fechaDeRadicado').daterangepicker({
+        	autoUpdateInput: true,
+        	singleDatePicker: true,
+		    "showDropdowns": true,
+		    "maxDate": "${today.format('dd/MM/yyyy')}",
+        	calender_style: "picker_4",
+        	"locale": {
+		        "format": "DD/MM/YYYY",
+		        "separator": " - ",
+		        "applyLabel": "Aceptar",
+		        "cancelLabel": "Cancelar",
+		        "weekLabel": "S",
+		        "daysOfWeek": [
+		            "Do",
+		            "Lu",
+		            "Ma",
+		            "Mi",
+		            "Ju",
+		            "Vi",
+		            "Sa"
+		        ],
+		        "monthNames": [
+		            "Enero",
+		            "Febrero",
+		            "Marzo",
+		            "Abril",
+		            "Mayo",
+		            "Junio",
+		            "Julio",
+		            "Agosto",
+		            "Septiembre",
+		            "Octubre",
+		            "Noviembre",
+		            "Diciembre"
+		        ],
+	    	},
+        }, function(start, end, label) {
+        	$("#fechaDeRadicado").val(start.format('MM/DD/YYYY'));
+        });
+      });
 	</script>
 
 

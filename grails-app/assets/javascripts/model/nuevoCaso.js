@@ -1,22 +1,3 @@
-function fijarFechaActual(){
-	
-	var today = new Date();
-	var dd = today.getDate();
-	var mm = today.getMonth()+1; //January is 0!
-	var yyyy = today.getFullYear();
-
-	if(dd<10) {
-	    dd='0'+dd
-	} 
-
-	if(mm<10) {
-	    mm='0'+mm
-	} 
-
-	today = dd+'-'+mm+'-'+yyyy;
-	document.getElementById("fechaDeRadicado").value=today;
-}
-
 
 
 function guardarCaso() {
@@ -37,9 +18,6 @@ function guardarCaso() {
 	var citologo = document.getElementById("citologo").value
 	var historiaClinica = document.getElementById("historiaClinica").value
 	var fechaDeRadicado = document.getElementById("fechaDeRadicado").value
-
-
-	
 
 		var nuevoCaso = {
 			"tipoDeCaso" : tipoDeCaso,
@@ -75,24 +53,13 @@ function guardarCaso() {
 			url : "registrarCaso",
 			async : true,
 			success : function(data, textStatus) {
-
-				if (data == "Error") {
-					alert("Ha ocurrido un error");
-				} else if (data == "Ya existe el paciente") {
-					$('#customAlertError').modal('show');
-				} else {
-					console.log(data);
-					$('#customAlertSuccess').modal('show');
-				}
+				$('#successMessage').html("Se registró el caso correctamente con el identificador <b>"+data+"</b>")
+				$('#successModal').modal('show')
 			},
 			error : function(XMLHttpRequest, textStatus, errorThrown) {
 
 			}
 		});
-	
-
-
-
 }
 
 function cargarCiudades() {
