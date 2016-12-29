@@ -74,12 +74,13 @@ function guardarCaso() {
 
 function resetFormulario(){
 	$('#documentoDeIdentidad').val("");
-	$('#departamentoDeResidencia').val("--")
-	$("#departamentoDeResidencia").change()
-	$("#ciudadDeResidencia").val("--")
+	//$('#departamentoDeResidencia').val("--")
+	//$("#departamentoDeResidencia").change()
+	//$("#ciudadDeResidencia").val("--")
 	$("#materialRemitido").val("--")
 	$("#historiaClinica").val("")
 	$("#dxClinico").val("--")
+	$("#fechaDeNacimiento").val("")
 	validar()
 	revisarDocumento()
 }
