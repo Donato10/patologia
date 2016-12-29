@@ -60,8 +60,8 @@
                 <ul class="nav side-menu">
                   <li><a><i class="fa fa-home"></i> Ingresos <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                      <li><g:link controller='secretaria' action="nuevoPaciente">Nuevo paciente</g:link></li>
-                      <li><g:link controller='secretaria' action="nuevoCaso">Nuevo caso</g:link></li>
+                      <li><g:link controller='caso' action="nuevoPaciente">Nuevo paciente</g:link></li>
+                      <li><g:link controller='caso' action="nuevoCaso">Nuevo caso</g:link></li>
                     </ul>
                   </li>
                   <li><a><i class="fa fa-edit"></i> Forms <span class="fa fa-chevron-down"></span></a>
