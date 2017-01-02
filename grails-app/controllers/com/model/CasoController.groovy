@@ -31,7 +31,7 @@ class CasoController {
 			if( params.anularFecha== "true"){
 				System.out.println("se debe anular la fecha")
 				Paciente nuevoPaciente = new Paciente(
-					numeroDeIdentificacion : params.numeroDeIdentificacion?params.numeroDeIdentificacion.trim():"",
+					numeroDeIdentificacion : params.numeroDeIdentificacion?params.numeroDeIdentificacion.trim().toUpperCase():"",
 					regimenDeSalud : params.regimen?params.regimen.trim():"",
 					primerNombre: params.primerNombre?params.primerNombre.trim():"",
 					segundoNombre: params.segundoNombre?params.segundoNombre.trim():"",
@@ -440,21 +440,55 @@ class CasoController {
 		render view:"buscador"
 	}
 
-	def buscadorDePacientes() {
-
-		User current = User.findByUsername(SecurityUtils.getSubject().getPrincipal())
-		Secretaria usuario = Secretaria.findBySecUser(current)
-		nickName = usuario.email.substring(0,usuario.email.indexOf("@"));
-		render( view: "nuevoCaso", model : [ tipoDeUsuario: current.profesion, username :
-			nickName, idUserProf : usuario.id, idSecUser: current.id ] )
-	}
 	def buscadorDeCasos() {
+		println params
+		def results = []
+		
+		def pacientes = Paciente.findAllByNumeroDeIdentificacionLikeAndPrimerApellidoLike(params.documentoDeIdentificacion?params.documentoDeIdentificacion.toUpperCase()+"%":'%', params.primerApellido?params.primerApellido.toUpperCase()+"%":'%', params.primerNombre?params.primerNombre.toUpperCase()+"%":'%')
+		//def pacientes = Paciente.findAllByNumeroDeIdentificacionLikeAndPrimerApellidoLike('%', '%', '%')
+		println pacientes
+		if(pacientes.size()==0){
+			render results as JSON
+			return
+		}
 
-		User current = User.findByUsername(SecurityUtils.getSubject().getPrincipal())
-		Secretaria usuario = Secretaria.findBySecUser(current)
-		nickName = usuario.email.substring(0,usuario.email.indexOf("@"));
-		render( view: "nuevoCaso", model : [ tipoDeUsuario: current.profesion, username :
-			nickName, idUserProf : usuario.id, idSecUser: current.id ] )
+		def patologos = PatologoProfesional.findAllByNombresLikeOrApellidosLike(params.patologo?params.patologo.trim()+"%":"%", params.patologo?params.patologo.trim()+"%":"%")
+		println "patologos: "+ patologos
+
+		params.idCaso = params.idCaso?params.idCaso:""
+		params.dxClinico = params.dxClinico?params.dxClinico:""
+		def quirurgicos = Quirurgico.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos}
+		def citologias = Citologia.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos}
+		def citometrias = Citometria.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos}
+		def necropsias = Necropsia.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos}
+		println "quirurgicos: "+ quirurgicos
+		println "citologias: "+ citologias
+		println "citometrias: "+ citometrias
+		println "necropsias: "+ necropsias
+
+
+		if(quirurgicos.size() > 0){
+			for(quirurgico in quirurgicos){
+				results.push([idCaso:quirurgico.idCaso, estado:quirurgico.estadoDelCaso, paciente:quirurgico.paciente.primerApellido+" "+(quirurgico.paciente.segundoApellido?quirurgico.paciente.segundoApellido:"")+", "+quirurgico.paciente.primerNombre+" "+(quirurgico.paciente.segundoNombre?quirurgico.paciente.segundoNombre:""), fechaDeIngreso:quirurgico.fechaDeRadicado.format("yyyy-MM-dd"), responsable:quirurgico.patologoResponsable.apellidos+", "+quirurgico.patologoResponsable.nombres, dxClinico:quirurgico.diagnosticoClinico, tipo:"Quirurgico"])
+			}
+		}
+		if(citologias.size() > 0){
+			for(citologia in citologias){
+				results.push([idCaso:citologia.idCaso, estado:citologia.estadoDelCaso, paciente:citologia.paciente.primerApellido+" "+(citologia.paciente.segundoApellido?citologia.paciente.segundoApellido:"")+", "+citologia.paciente.primerNombre+" "+(citologia.paciente.segundoNombre?citologia.paciente.segundoNombre:""), fechaDeIngreso:citologia.fechaDeRadicado.format("yyyy-MM-dd"), responsable:citologia.patologoResponsable.apellidos+", "+citologia.patologoResponsable.nombres, dxClinico:citologia.diagnosticoClinico, tipo:"Citologia"])
+			}
+			
+		}
+		if(citometrias.size() > 0){
+			for(citometria in citometrias){
+				results.push([idCaso:citometria.idCaso, estado:citometria.estadoDelCaso, paciente:citometria.paciente.primerApellido+" "+(citometria.paciente.segundoApellido?citometria.paciente.segundoApellido:"")+", "+citometria.paciente.primerNombre+" "+(citometria.paciente.segundoNombre?citometria.paciente.segundoNombre:""), fechaDeIngreso:citometria.fechaDeRadicado.format("yyyy-MM-dd"), responsable:citometria.patologoResponsable.apellidos+", "+citometria.patologoResponsable.nombres, dxClinico:citometria.diagnosticoClinico, tipo:"Citometria"])
+			}
+		}
+		if(necropsias.size() > 0){
+			for(necropsia in necropsias){
+				results.push([idCaso:necropsia.idCaso, estado:necropsia.estadoDelCaso, paciente:necropsia.paciente.primerApellido+" "+(necropsia.paciente.segundoApellido?necropsia.paciente.segundoApellido:"")+", "+necropsia.paciente.primerNombre+" "+(necropsia.paciente.segundoNombre?necropsia.paciente.segundoNombre:""), fechaDeIngreso:necropsia.fechaDeRadicado.format("yyyy-MM-dd"), responsable:necropsia.patologoResponsable.apellidos+", "+necropsia.patologoResponsable.nombres, dxClinico:necropsia.diagnosticoClinico, tipo:"Necropsia"])
+			}
+		}			
+		render results as JSON
 	}
 	def facturar() {
 

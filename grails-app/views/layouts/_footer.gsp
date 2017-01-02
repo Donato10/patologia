@@ -30,6 +30,8 @@
 
     <!-- Gentelella Theme Scripts -->
     <asset:javascript src="gentelella/master.js"/>
+    <!-- Gentelella Theme Scripts -->
+    <asset:javascript src="application.js"/>
 
   </body>
 </html>

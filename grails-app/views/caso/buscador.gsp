@@ -15,7 +15,7 @@
 					</div>
 
 					<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
-						<input required=""  type="text" class="date-picker form-control"  placeholder="Apellido 1" id="apellido1"/><br/>
+						<input required=""  type="text" class="form-control nombre"  placeholder="Apellido 1" id="apellido1"/><br/>
 					</div>
 
 					<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
@@ -47,8 +47,21 @@
 				</div>
 				<br/>
 			</div>	
-			<div align="center">
-			
+			<div class="row">
+				<table class="table table-bordered table-condensed table-pt-primary" id="resultsTable">
+					<thead>
+						<th>Id caso</th>
+						<th>Tipo</th>
+						<th>Paciente</th>
+						<th>Fecha de radicado</th>
+						<th>Responsable</th>
+						<th>Estado</th>
+
+					</thead>
+					<tbody>
+						
+					</tbody>
+				</table>
 			</div>
         </div>
         <!-- /page content -->
@@ -103,16 +116,51 @@
         startDate: start,
         endDate: end,
         ranges: {
-           'Today': [moment(), moment()],
-           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+           'Hoy': [moment(), moment()],
+           'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           'Últimos 7 días': [moment().subtract(6, 'days'), moment()],
            'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-           'This Month': [moment().startOf('month'), moment().endOf('month')],
-           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+           'Últimos 30 días': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         }
     }, cb);
 
     cb(start, end);
-    
 });
+
+     function buscar(){
+    	var numeroDeIdentificacion = $('#numeroDeIdentificacion').val().trim()
+    	var primerNombre = $('#nombre1').val().trim()
+    	var primerApellido = $('#apellido1').val().trim()
+    	var patologo = $('#patologo').val().trim()
+    	var dxClinico = $('#dxclinico').val().trim()
+
+    	jQuery.ajax({
+				type : 'POST',
+				data : {
+					documentoDeIdentificacion:numeroDeIdentificacion,
+					primerNombre:primerNombre,
+					primerApellido:primerApellido,
+					patologo:patologo,
+					dxClinico:dxClinico
+				},
+				url : "buscadorDeCasos",
+				async : true,
+				success : function(data, textStatus) {
+					console.log(data)
+					$("#btnSave1").html('Buscar')
+					$("#btnSave1").prop('disabled', false);
+					$('#resultsTable > tbody').empty()
+					for(var i=0; i < data.length;i++){
+						$('#resultsTable > tbody').append($('<tr><td>'+data[i].idCaso+'</td><td>'+data[i].tipo+'</td><td>'+data[i].paciente+'</td><td>'+data[i].fechaDeIngreso+'</td><td>'+data[i].responsable+'</td><td>'+data[i].estado+'</td></tr>'))
+					}
+					
+				},
+				error : function(status, text, result, xhr) {
+					$("#btnSave1").html('Buscar')
+					$("#btnSave1").prop('disabled', false);
+					$('#errorMessage').html(status.responseText)
+					$('#errorModal').modal('show')
+				}
+			});
+    }
 </script>
