@@ -90,7 +90,7 @@
 					</div>
 
 					<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
-						<label for="">Patologo asignado al caso<b style="color:red">*</b></label> 
+						<label for="">Patólogo asignado al caso<b style="color:red">*</b></label> 
 						<select id="patologoAsignadoAlCaso" name="patologoAsignado" class="form-control">
 							<option selected>--</option>
 							<script>
@@ -569,6 +569,7 @@
 		            "Noviembre",
 		            "Diciembre"
 		        ],
+		        "firstDay": 1,
 	    	},
         }, function(start, end, label) {
         	$("#fechaDeRadicado").val(start.format('MM/DD/YYYY'));

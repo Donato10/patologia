@@ -1,5 +1,4 @@
 	    <%@page defaultCodec="none" %>
-	    <asset:stylesheet src="bootstrap-daterangepicker/daterangepicker.css"/>
 	    <g:render template="/layouts/navbar"/>
         <!-- page content -->
         <div class="right_col" role="main">

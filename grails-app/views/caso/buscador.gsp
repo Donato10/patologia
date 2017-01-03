@@ -1,5 +1,4 @@
 	    <%@page defaultCodec="none" %>
-	    <asset:stylesheet src="bootstrap-daterangepicker/daterangepicker.css"/>
 	    <g:render template="/layouts/navbar"/>
         <!-- page content -->
         <div class="right_col" role="main">
@@ -50,12 +49,12 @@
 			<div class="row">
 				<table class="table table-bordered table-condensed table-pt-primary" id="resultsTable">
 					<thead>
-						<th>Id caso</th>
-						<th>Tipo</th>
-						<th>Paciente</th>
-						<th>Fecha de radicado</th>
-						<th>Responsable</th>
-						<th>Estado</th>
+						<th class="th-pt">Id caso</th>
+						<th class="th-pt">Tipo</th>
+						<th class="th-pt">Paciente</th>
+						<th class="th-pt">Fecha de radicado</th>
+						<th class="th-pt">Responsable</th>
+						<th class="th-pt">Estado</th>
 
 					</thead>
 					<tbody>
@@ -105,34 +104,68 @@
     	
     $(function() {
 
-    var start = moment().subtract(29, 'days');
-    var end = moment();
+	    var start = moment().subtract(29, 'days');
+	    var end = moment();
 
-    function cb(start, end) {
-        $('#rango span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-    }
+	    function cb(start, end) {
+	        $('#rango').val(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+	    }
 
-    $('#rango').daterangepicker({
-        startDate: start,
-        endDate: end,
-        ranges: {
-           'Hoy': [moment(), moment()],
-           'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-           'Últimos 7 días': [moment().subtract(6, 'days'), moment()],
-           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-           'Últimos 30 días': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-        }
-    }, cb);
+	    $('#rango').daterangepicker({
+	        startDate: start,
+	        endDate: end,
+	        locale:{
+	        	 "format": "DD/MM/YYYY",
+	        	 "separator":" - ",
+	        	"customRangeLabel": "Personalizado",
+			    "applyLabel": "Aplicar",
+		        "cancelLabel": "Cancelar",
+		        "fromLabel": "Desde",
+		        "toLabel": "Hasta",
+		        "daysOfWeek": [
+		            "Do",
+		            "Lu",
+		            "Ma",
+		            "Mi",
+		            "Ju",
+		            "Vi",
+		            "Sa"
+		        ],
+		        "monthNames": [
+		            "Enero",
+		            "Febrero",
+		            "Marzo",
+		            "Abril",
+		            "Mayo",
+		            "Junio",
+		            "Julio",
+		            "Agosto",
+		            "Septiembre",
+		            "Octubre",
+		            "Noviembre",
+		            "Diciembre"
+		        ],
+	        },
+	        ranges: {
+	           'Hoy': [moment(), moment()],
+	           'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+	           'Últimos 7 días': [moment().subtract(6, 'days'), moment()],
+	           'Últimos 30 días': [moment().subtract(29, 'days'), moment()],
+	           'Últimos 365 días': [moment().subtract(365, 'days'), moment()]
+	        }
+	    }, cb);
 
-    cb(start, end);
-});
+	    cb(start, end);
+	});
 
-     function buscar(){
+    function buscar(){
     	var numeroDeIdentificacion = $('#numeroDeIdentificacion').val().trim()
     	var primerNombre = $('#nombre1').val().trim()
     	var primerApellido = $('#apellido1').val().trim()
+    	var segundoApellido = $('#apellido2').val().trim()
     	var patologo = $('#patologo').val().trim()
     	var dxClinico = $('#dxclinico').val().trim()
+    	var rango = $('#rango').val().trim()
 
     	jQuery.ajax({
 				type : 'POST',
@@ -140,8 +173,10 @@
 					documentoDeIdentificacion:numeroDeIdentificacion,
 					primerNombre:primerNombre,
 					primerApellido:primerApellido,
+					segundoApellido:segundoApellido,
 					patologo:patologo,
-					dxClinico:dxClinico
+					dxClinico:dxClinico,
+					rango:rango
 				},
 				url : "buscadorDeCasos",
 				async : true,

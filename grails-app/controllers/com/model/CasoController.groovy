@@ -443,8 +443,11 @@ class CasoController {
 	def buscadorDeCasos() {
 		println params
 		def results = []
+    	def fechaInicial = params.rango?Date.parse('dd/MM/yyyy', params.rango.split(" - ")[0]):new Date()
+    	def fechaFinal = params.rango?Date.parse('dd/MM/yyyy', params.rango.split(" - ")[1]).plus(1):new Date()
+
 		
-		def pacientes = Paciente.findAllByNumeroDeIdentificacionLikeAndPrimerApellidoLike(params.documentoDeIdentificacion?params.documentoDeIdentificacion.toUpperCase()+"%":'%', params.primerApellido?params.primerApellido.toUpperCase()+"%":'%', params.primerNombre?params.primerNombre.toUpperCase()+"%":'%')
+		def pacientes = Paciente.findAllByNumeroDeIdentificacionLikeAndPrimerApellidoLikeAndPrimerNombreLikeAndSegundoApellidoLike(params.documentoDeIdentificacion?params.documentoDeIdentificacion.toUpperCase()+"%":'%', params.primerApellido?params.primerApellido.toUpperCase()+"%":'%', params.primerNombre?params.primerNombre.toUpperCase()+"%":'%', params.segundoApellido?params.segundoApellido.toUpperCase()+"%":'%')
 		//def pacientes = Paciente.findAllByNumeroDeIdentificacionLikeAndPrimerApellidoLike('%', '%', '%')
 		println pacientes
 		if(pacientes.size()==0){
@@ -455,12 +458,15 @@ class CasoController {
 		def patologos = PatologoProfesional.findAllByNombresLikeOrApellidosLike(params.patologo?params.patologo.trim()+"%":"%", params.patologo?params.patologo.trim()+"%":"%")
 		println "patologos: "+ patologos
 
+		println "Fechas_: "+ (new Date() >= fechaInicial)+", "+ (new Date() <= fechaFinal)
+		println "Inicial: "+fechaInicial +", Final:"+fechaFinal
+
 		params.idCaso = params.idCaso?params.idCaso:""
 		params.dxClinico = params.dxClinico?params.dxClinico:""
-		def quirurgicos = Quirurgico.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos}
-		def citologias = Citologia.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos}
-		def citometrias = Citometria.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos}
-		def necropsias = Necropsia.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos}
+		def quirurgicos = Quirurgico.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos && it.fechaDeRadicado >= fechaInicial && it.fechaDeRadicado <= fechaFinal}
+		def citologias = Citologia.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos && it.fechaDeRadicado >= fechaInicial && it.fechaDeRadicado <= fechaFinal}
+		def citometrias = Citometria.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos && it.fechaDeRadicado >= fechaInicial && it.fechaDeRadicado <= fechaFinal}
+		def necropsias = Necropsia.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos && it.fechaDeRadicado >= fechaInicial && it.fechaDeRadicado <= fechaFinal}
 		println "quirurgicos: "+ quirurgicos
 		println "citologias: "+ citologias
 		println "citometrias: "+ citometrias

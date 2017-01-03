@@ -19,7 +19,8 @@
   height: 30px;
   border: 1px solid #ADB2B5;
   line-height: 30px;
-  border-radius: 0px !important; }
+  border-radius: 0px !important;
+  color: #73879C !important;}
 .daterangepicker select.monthselect {
   margin-right: 2%; }
 .daterangepicker td.in-range {

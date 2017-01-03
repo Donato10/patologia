@@ -17,14 +17,17 @@
     <asset:stylesheet src="nprogress/nprogress.css" />
       <!-- iCheck -->
     <asset:stylesheet src="iCheck/skins/flat/green.css" />
-      <!-- bootstrap-daterangepicker -->
-    <asset:stylesheet src="bootstrap-daterangepicker/daterangepicker.css" />
+
       <!-- Gentelella Theme Style -->
     <asset:stylesheet src='gentelella/master.css'/>
+      <!-- jQuery, se carga aquí por conveniencia de procesos -->
+    <asset:javascript src="jquery/dist/jquery.min.js"/>
+      <!-- bootstrap-daterangepicker -->
+    <asset:stylesheet src="bootstrap-daterangepicker/daterangepicker.css" />
       <!-- Custom Theme Style -->
     <asset:stylesheet src='custom.css'/>
-    <!-- jQuery, se carga aquí por conveniencia de procesos -->
-    <asset:javascript src="jquery/dist/jquery.min.js"/>
+
+
   </head>
 
   <body class="nav-md">
