@@ -67,10 +67,19 @@
                       <li><g:link controller='caso' action="nuevoCaso">Nuevo caso</g:link></li>
                     </ul>
                   </li>
-                  <li>
-                    <g:link controller="caso" action="buscador"><i class="fa fa-search"></i> Buscador <span class="fa fa-chevron-right"></span></g:link>
-                  </li>
-                  <li><a><i class="fa fa-desktop"></i> UI Elements <span class="fa fa-chevron-down"></span></a>
+                  <sec:ifAnyGranted roles='ROLE_PATOLOGO,ROLE_SECRETARIA'>
+                    <li>
+                      <g:link controller="caso" action="buscador"><i class="fa fa-search"></i> Buscador <span class="fa fa-chevron-right"></span></g:link>
+                    </li>
+                  </sec:ifAnyGranted>
+
+                  <sec:ifAllGranted roles="ROLE_PATOLOGO">
+                    <li>
+                      <g:link controller="patologoProfesional" action="work"><i class="fa fa-list"></i> Hoja de trabajo <span class="fa fa-chevron-right"></span></g:link>
+                    </li>
+                  </sec:ifAllGranted>
+
+                  <li><a><i class="fa fa-desktop"></i> Hoja de trabajo <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                       <li><a href="general_elements.html">General Elements</a></li>
                       <li><a href="media_gallery.html">Media Gallery</a></li>
