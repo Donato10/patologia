@@ -22,7 +22,7 @@
 
   </head>
 
-  <body class="nav-md">
+  <body class="nav-md" style="color:white !important">
     <div class="container body">
       <div class="main_container">
         <!-- page content -->

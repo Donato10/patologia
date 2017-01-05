@@ -32,10 +32,10 @@ class PatologoProfesionalController {
 		def citometriasOtros = Citometria.findAllByPatologoResponsableAndEstadoDelCasoNotEquals(usuario, "Microdescrito")
 
 		
-		def necropsiasMacro = necropsia.findAllByPatologoResponsableDeLaMacroDescripcionAndEstadoDelCaso(usuario, "Registrado")
-		def necropsiasMicro = necropsia.findAllByPatologoResponsableDeLaMicroDescripcionAndEstadoDelCaso(usuario, "Procesado")
-		def necropsiasResp = necropsia.findAllByPatologoResponsableAndEstadoDelCaso(usuario, "Microdescrito")
-		def necropsiaOtros = necropsia.findAllByPatologoResponsableAndEstadoDelCasoNotEquals(usuario, "Microdescrito")
+		def necropsiasMacro = Necropsia.findAllByPatologoResponsableDeLaMacroDescripcionAndEstadoDelCaso(usuario, "Registrado")
+		def necropsiasMicro = Necropsia.findAllByPatologoResponsableDeLaMicroDescripcionAndEstadoDelCaso(usuario, "Procesado")
+		def necropsiasResp = Necropsia.findAllByPatologoResponsableAndEstadoDelCaso(usuario, "Microdescrito")
+		def necropsiasOtros = Necropsia.findAllByPatologoResponsableAndEstadoDelCasoNotEquals(usuario, "Microdescrito")
 
 		def citologias = Citologia.findAllByPatologoResponsable(usuario)
 
@@ -47,7 +47,7 @@ class PatologoProfesionalController {
 			if(quirurgico.fechaDeRadicado <= new Date().minus(2)){
 				color = "rgba(255, 165, 0, 0.59);"
 				if(quirurgico.fechaDeRadicado <= new Date().minus(5))
-					color = " rgba(255, 0, 0, 0.44)"
+					color = " rgba(228, 92, 92, 0.38)"
 			}
 			casos.push([id: quirurgico.id, idCaso:quirurgico.idCaso, estado:quirurgico.estadoDelCaso, fechaDeRadicado:quirurgico.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"Quirurgico", color:color, documento: quirurgico.paciente.numeroDeIdentificacion, accion:"Macro"])		}
 
@@ -56,7 +56,7 @@ class PatologoProfesionalController {
 			if(quirurgico.fechaDeRadicado <= new Date().minus(2)){
 				color = "rgba(255, 165, 0, 0.59);"
 				if(quirurgico.fechaDeRadicado <= new Date().minus(5))
-					color = " rgba(255, 0, 0, 0.44)"
+					color = " rgba(228, 92, 92, 0.38)"
 			}
 			casos.push([id: quirurgico.id, idCaso:quirurgico.idCaso, estado:quirurgico.estadoDelCaso, fechaDeRadicado:quirurgico.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"Quirurgico", color:color, documento: quirurgico.paciente.numeroDeIdentificacion, accion:"Micro"])
 		}
@@ -66,7 +66,7 @@ class PatologoProfesionalController {
 			if(quirurgico.fechaDeRadicado <= new Date().minus(2)){
 				color = "rgba(255, 165, 0, 0.59);"
 				if(quirurgico.fechaDeRadicado <= new Date().minus(5))
-					color = " rgba(255, 0, 0, 0.44)"
+					color = " rgba(228, 92, 92, 0.38)"
 			}
 			casos.push([id: quirurgico.id, idCaso:quirurgico.idCaso, estado:quirurgico.estadoDelCaso, fechaDeRadicado:quirurgico.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"Quirurgico", color:color, documento: quirurgico.paciente.numeroDeIdentificacion, accion:"Revisar"])
 		}
@@ -76,7 +76,7 @@ class PatologoProfesionalController {
 			if(quirurgico.fechaDeRadicado <= new Date().minus(2)){
 				color = "rgba(255, 165, 0, 0.59);"
 				if(quirurgico.fechaDeRadicado <= new Date().minus(5))
-					color = " rgba(255, 0, 0, 0.44)"
+					color = " rgba(228, 92, 92, 0.38)"
 			}
 			casos.push([id: quirurgico.id, idCaso:quirurgico.idCaso, estado:quirurgico.estadoDelCaso, fechaDeRadicado:quirurgico.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"Quirurgico", color:color, documento: quirurgico.paciente.numeroDeIdentificacion, accion:"Alertar"])
 		}
@@ -89,18 +89,18 @@ class PatologoProfesionalController {
 			if(citometria.fechaDeRadicado <= new Date().minus(2)){
 				color = "rgba(255, 165, 0, 0.59);"
 				if(citometria.fechaDeRadicado <= new Date().minus(5))
-					color = " rgba(255, 0, 0, 0.44)"
+					color = " rgba(228, 92, 92, 0.38)"
 			}
-			casos.push([id: citometria.id, idCaso:citometria.idCaso, estado:citometria.estadoDelCaso, fechaDeRadicado:citometria.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"citometria", color:color, documento: citometria.paciente.numeroDeIdentificacion, accion:"Macro"])		}
+			casos.push([id: citometria.id, idCaso:citometria.idCaso, estado:citometria.estadoDelCaso, fechaDeRadicado:citometria.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"Citometria", color:color, documento: citometria.paciente.numeroDeIdentificacion, accion:"Macro"])		}
 
 		for(citometria in citometriasMicro){
 			def color = "rgba(74, 216, 74, 0.67);"
 			if(citometria.fechaDeRadicado <= new Date().minus(2)){
 				color = "rgba(255, 165, 0, 0.59);"
 				if(citometria.fechaDeRadicado <= new Date().minus(5))
-					color = " rgba(255, 0, 0, 0.44)"
+					color = " rgba(228, 92, 92, 0.38)"
 			}
-			casos.push([id: citometria.id, idCaso:citometria.idCaso, estado:citometria.estadoDelCaso, fechaDeRadicado:citometria.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"citometria", color:color, documento: citometria.paciente.numeroDeIdentificacion, accion:"Micro"])
+			casos.push([id: citometria.id, idCaso:citometria.idCaso, estado:citometria.estadoDelCaso, fechaDeRadicado:citometria.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"Citometria", color:color, documento: citometria.paciente.numeroDeIdentificacion, accion:"Micro"])
 		}
 
 		for(citometria in citometriasResp){
@@ -108,9 +108,9 @@ class PatologoProfesionalController {
 			if(citometria.fechaDeRadicado <= new Date().minus(2)){
 				color = "rgba(255, 165, 0, 0.59);"
 				if(citometria.fechaDeRadicado <= new Date().minus(5))
-					color = " rgba(255, 0, 0, 0.44)"
+					color = " rgba(228, 92, 92, 0.38)"
 			}
-			casos.push([id: citometria.id, idCaso:citometria.idCaso, estado:citometria.estadoDelCaso, fechaDeRadicado:citometria.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"citometria", color:color, documento: citometria.paciente.numeroDeIdentificacion, accion:"Revisar"])
+			casos.push([id: citometria.id, idCaso:citometria.idCaso, estado:citometria.estadoDelCaso, fechaDeRadicado:citometria.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"Citometria", color:color, documento: citometria.paciente.numeroDeIdentificacion, accion:"Revisar"])
 		}
 
 		for(citometria in citometriasOtros){
@@ -118,9 +118,9 @@ class PatologoProfesionalController {
 			if(citometria.fechaDeRadicado <= new Date().minus(2)){
 				color = "rgba(255, 165, 0, 0.59);"
 				if(citometria.fechaDeRadicado <= new Date().minus(5))
-					color = " rgba(255, 0, 0, 0.44)"
+					color = " rgba(228, 92, 92, 0.38)"
 			}
-			casos.push([id: citometria.id, idCaso:citometria.idCaso, estado:citometria.estadoDelCaso, fechaDeRadicado:citometria.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"citometria", color:color, documento: citometria.paciente.numeroDeIdentificacion, accion:"Alertar"])
+			casos.push([id: citometria.id, idCaso:citometria.idCaso, estado:citometria.estadoDelCaso, fechaDeRadicado:citometria.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"Citometria", color:color, documento: citometria.paciente.numeroDeIdentificacion, accion:"Alertar"])
 		}
 
 
@@ -130,7 +130,7 @@ class PatologoProfesionalController {
 			if(citologia.fechaDeRadicado <= new Date().minus(2)){
 				color = "rgba(255, 165, 0, 0.59);"
 				if(citologia.fechaDeRadicado <= new Date().minus(5))
-					color = " rgba(255, 0, 0, 0.44)"
+					color = " rgba(228, 92, 92, 0.38)"
 			}
 			casos.push([id: citologia.id, idCaso:citologia.idCaso, estado:citologia.estadoDelCaso, fechaDeRadicado:citologia.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"Citologia", color:color, documento: citologia.paciente.numeroDeIdentificacion, accion:"Alertar"])
 		}
@@ -142,18 +142,18 @@ class PatologoProfesionalController {
 			if(necropsia.fechaDeRadicado <= new Date().minus(2)){
 				color = "rgba(255, 165, 0, 0.59);"
 				if(necropsia.fechaDeRadicado <= new Date().minus(5))
-					color = " rgba(255, 0, 0, 0.44)"
+					color = " rgba(228, 92, 92, 0.38)"
 			}
-			casos.push([id: necropsia.id, idCaso:necropsia.idCaso, estado:necropsia.estadoDelCaso, fechaDeRadicado:necropsia.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"necropsia", color:color, documento: necropsia.paciente.numeroDeIdentificacion, accion:"Macro"])		}
+			casos.push([id: necropsia.id, idCaso:necropsia.idCaso, estado:necropsia.estadoDelCaso, fechaDeRadicado:necropsia.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"Necropsia", color:color, documento: necropsia.paciente.numeroDeIdentificacion, accion:"Macro"])		}
 
 		for(necropsia in necropsiasMicro){
 			def color = "rgba(74, 216, 74, 0.67);"
 			if(necropsia.fechaDeRadicado <= new Date().minus(2)){
 				color = "rgba(255, 165, 0, 0.59);"
 				if(necropsia.fechaDeRadicado <= new Date().minus(5))
-					color = " rgba(255, 0, 0, 0.44)"
+					color = " rgba(228, 92, 92, 0.38)"
 			}
-			casos.push([id: necropsia.id, idCaso:necropsia.idCaso, estado:necropsia.estadoDelCaso, fechaDeRadicado:necropsia.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"necropsia", color:color, documento: necropsia.paciente.numeroDeIdentificacion, accion:"Micro"])
+			casos.push([id: necropsia.id, idCaso:necropsia.idCaso, estado:necropsia.estadoDelCaso, fechaDeRadicado:necropsia.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"Necropsia", color:color, documento: necropsia.paciente.numeroDeIdentificacion, accion:"Micro"])
 		}
 
 		for(necropsia in necropsiasResp){
@@ -161,9 +161,9 @@ class PatologoProfesionalController {
 			if(necropsia.fechaDeRadicado <= new Date().minus(2)){
 				color = "rgba(255, 165, 0, 0.59);"
 				if(necropsia.fechaDeRadicado <= new Date().minus(5))
-					color = " rgba(255, 0, 0, 0.44)"
+					color = " rgba(228, 92, 92, 0.38)"
 			}
-			casos.push([id: necropsia.id, idCaso:necropsia.idCaso, estado:necropsia.estadoDelCaso, fechaDeRadicado:necropsia.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"necropsia", color:color, documento: necropsia.paciente.numeroDeIdentificacion, accion:"Revisar"])
+			casos.push([id: necropsia.id, idCaso:necropsia.idCaso, estado:necropsia.estadoDelCaso, fechaDeRadicado:necropsia.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"Necropsia", color:color, documento: necropsia.paciente.numeroDeIdentificacion, accion:"Revisar"])
 		}
 
 		for(necropsia in necropsiasOtros){
@@ -171,9 +171,9 @@ class PatologoProfesionalController {
 			if(necropsia.fechaDeRadicado <= new Date().minus(2)){
 				color = "rgba(255, 165, 0, 0.59);"
 				if(necropsia.fechaDeRadicado <= new Date().minus(5))
-					color = " rgba(255, 0, 0, 0.44)"
+					color = " rgba(228, 92, 92, 0.38)"
 			}
-			casos.push([id: necropsia.id, idCaso:necropsia.idCaso, estado:necropsia.estadoDelCaso, fechaDeRadicado:necropsia.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"necropsia", color:color, documento: necropsia.paciente.numeroDeIdentificacion, accion:"Alertar"])
+			casos.push([id: necropsia.id, idCaso:necropsia.idCaso, estado:necropsia.estadoDelCaso, fechaDeRadicado:necropsia.fechaDeRadicado?.format('dd/MM/yyyy'), tipo:"Necropsia", color:color, documento: necropsia.paciente.numeroDeIdentificacion, accion:"Alertar"])
 		}
 
 		casos.sort{Date.parse( "dd/MM/yyyy", it.fechaDeRadicado)}

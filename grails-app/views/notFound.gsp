@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Gentelella Alela! | </title>
+    <title>404 </title>
 
     <!-- Bootstrap -->
     <asset:stylesheet src="bootstrap/dist/css/bootstrap.min.css" />
@@ -18,9 +18,12 @@
 
     <!-- Custom Theme Style -->
     <asset:stylesheet src="gentelella/master.css" />
+
+    <asset:stylesheet src="custom.css" />
+
   </head>
 
-  <body class="nav-md">
+  <body class="nav-md" style="color:white !important">
     <div class="container body">
       <div class="main_container">
         <!-- page content -->
@@ -31,7 +34,7 @@
               <h2>Lo siento, no pudismos encontrar la página</h2>
               <p>La página que buscas no existe</p>
               <div class="mid_center">
-              <button class="alert alert-primary" style="border: solid 1px #ffffff"> <g:link controller="user" action="index">Llevame a la página principal</g:link></button>
+              <button class="btn btn-pt-primary" style="border: solid 1px #ffffff"> <g:link controller="user" action="index">Llevame a la página principal</g:link></button>
                 
               </div>
             </div>

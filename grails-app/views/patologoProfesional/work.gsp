@@ -21,18 +21,20 @@
 								<td style="background-color: ${caso.color}">${caso.fechaDeRadicado}</td>
 								<td style="background-color: ${caso.color}">${caso.estado}</td>
 								
-								<td>
+								<td style="background-color: ${caso.color}">
 									<g:if test='${caso.accion=="Macro"}'>
-										<button class="btn btn-pt-primary"> Macrodescribir</button>
+										<g:link controller="caso" action="macrodescribir" id="${caso.id}">
+											<button class="btn btn-pt-primary"> Macrodescribir <i class="fa fa-pencil"></i></button>
+										</g:link>
 									</g:if>
 									<g:elseif test='${caso.accion=="Micro"}'>
-										<button class="btn btn-warning"> Microdescribir</button>
+										<button class="btn btn-pt-primary"> Microdescribir <i class="fa fa-pencil"></i></button>
 									</g:elseif>
 									<g:elseif test='${caso.accion=="Alertar"}'>
-										<button class="btn btn-warning"> Enviar alerta</button>
+										<button class="btn btn-pt-primary"> Enviar alerta <i class="fa fa-bell"></i></button>
 									</g:elseif>
 									<g:elseif test='${caso.accion=="Revisar"}'>
-										<button class="btn btn-warning"> Revisar</button>
+										<button class="btn btn-pt-primary"> Revisar <i class="fa fa-eye"></i></button>
 									</g:elseif>
 								</td>
 							</tr>

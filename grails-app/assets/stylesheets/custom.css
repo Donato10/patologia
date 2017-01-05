@@ -3,6 +3,7 @@
 	padding: 30px;
 }
 .btn-pt-primary{
+	border: solid 2px #2a3f54;
 	background:  #2a3f54;
 	color:white;
 }
