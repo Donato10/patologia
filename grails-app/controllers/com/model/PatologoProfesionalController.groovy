@@ -21,21 +21,21 @@ class PatologoProfesionalController {
 		User current = springSecurityService.currentUser
 		PatologoProfesional usuario = PatologoProfesional.findBySecUser(current)
 		def quirurgicosMacro = Quirurgico.findAllByPatologoResponsableDeLaMacroDescripcionAndEstadoDelCaso(usuario, "Registrado")
-		def quirurgicosMicro = Quirurgico.findAllByPatologoResponsableDeLaMicroDescripcionAndEstadoDelCaso(usuario, "Procesado")
-		def quirurgicosResp = Quirurgico.findAllByPatologoResponsableAndEstadoDelCaso(usuario, "Microdescrito")
-		def quirurgicosOtros = Quirurgico.findAllByPatologoResponsableAndEstadoDelCasoNotEquals(usuario, "Microdescrito")
+		def quirurgicosMicro = Quirurgico.findAllByPatologoResponsableDeLaMicroDescripcionAndEstadoDelCaso(usuario, "Procesado").findAll{!(it in quirurgicosMacro)}
+		def quirurgicosResp = Quirurgico.findAllByPatologoResponsableAndEstadoDelCaso(usuario, "Microdescrito").findAll{!(it in quirurgicosMacro || it in quirurgicosMicro)}
+		def quirurgicosOtros = Quirurgico.findAllByPatologoResponsableAndEstadoDelCasoNotEquals(usuario, "Microdescrito").findAll{!(it in quirurgicosMacro || it in quirurgicosMicro || it in quirurgicosResp)}
 
 
 		def citometriasMacro = Citometria.findAllByPatologoResponsableDeLaMacroDescripcionAndEstadoDelCaso(usuario, "Registrado")
-		def citometriasMicro = Citometria.findAllByPatologoResponsableDeLaMicroDescripcionAndEstadoDelCaso(usuario, "Procesado")
-		def citometriasResp = Citometria.findAllByPatologoResponsableAndEstadoDelCaso(usuario, "Microdescrito")
-		def citometriasOtros = Citometria.findAllByPatologoResponsableAndEstadoDelCasoNotEquals(usuario, "Microdescrito")
+		def citometriasMicro = Citometria.findAllByPatologoResponsableDeLaMicroDescripcionAndEstadoDelCaso(usuario, "Procesado").findAll{!(it in citometriasMacro)}
+		def citometriasResp = Citometria.findAllByPatologoResponsableAndEstadoDelCaso(usuario, "Microdescrito").findAll{!(it in citometriasMacro || it in citometriasMicro)}
+		def citometriasOtros = Citometria.findAllByPatologoResponsableAndEstadoDelCasoNotEquals(usuario, "Microdescrito").findAll{!(it in citometriasMacro || it in citometriasMicro || it in citometriasResp)}
 
 		
 		def necropsiasMacro = Necropsia.findAllByPatologoResponsableDeLaMacroDescripcionAndEstadoDelCaso(usuario, "Registrado")
-		def necropsiasMicro = Necropsia.findAllByPatologoResponsableDeLaMicroDescripcionAndEstadoDelCaso(usuario, "Procesado")
-		def necropsiasResp = Necropsia.findAllByPatologoResponsableAndEstadoDelCaso(usuario, "Microdescrito")
-		def necropsiasOtros = Necropsia.findAllByPatologoResponsableAndEstadoDelCasoNotEquals(usuario, "Microdescrito")
+		def necropsiasMicro = Necropsia.findAllByPatologoResponsableDeLaMicroDescripcionAndEstadoDelCaso(usuario, "Procesado").findAll{!(it in necropsiasMacro)}
+		def necropsiasResp = Necropsia.findAllByPatologoResponsableAndEstadoDelCaso(usuario, "Microdescrito").findAll{!(it in necropsiasMacro || it in necropsiasMicro)}
+		def necropsiasOtros = Necropsia.findAllByPatologoResponsableAndEstadoDelCasoNotEquals(usuario, "Microdescrito").findAll{!(it in necropsiasMacro || it in necropsiasMicro || it in necropsiasResp)}
 
 		def citologias = Citologia.findAllByPatologoResponsable(usuario)
 

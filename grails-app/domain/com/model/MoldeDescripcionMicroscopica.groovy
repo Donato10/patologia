@@ -2,10 +2,8 @@ package com.model
 
 class MoldeDescripcionMicroscopica {
 
-	String nombreclave;
+	String nombreClave;
 	String descripcion;
-	
-	
 	
     static constraints = {
     }

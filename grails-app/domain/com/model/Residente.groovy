@@ -29,5 +29,9 @@ class Residente  extends Patologo{
 		this.email = email;
 		this.secUser = secUser;
 	}
+
+	public String obtenerNombreCompleto(){
+		return "Dr (a)."+this.nombres +" "+this.apellidos
+	}
 	
 }

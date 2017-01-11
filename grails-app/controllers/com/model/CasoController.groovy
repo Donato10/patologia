@@ -17,7 +17,6 @@ class CasoController {
 		render view:'nuevoCaso', model:[today:new Date()]
 	}
 
-
 	def registrarPaciente(){
 			println params
 			Paciente p = Paciente.findByNumeroDeIdentificacion(params.numeroDeIdentificacion)
@@ -104,40 +103,45 @@ class CasoController {
 	def cargarPatologos(){
 		render PatologoProfesional.list(sort:"nombres", order:"asc") as JSON
 	}
+
 	def cargarIPS(){
 		render IPS.list(sort:"razonSocial", order:"asc") as JSON
 	}
+
 	def cargarEPS(){
 		render EPS.list(sort:"nombre", order:"asc") as JSON
 	}
-	def cargarDepartamentos(){
 
+	def cargarDepartamentos(){
 		render Ciudad.getAll().unique{ it.departamento }.sort{it.departamento} as JSON
 	}
+
 	def cargarCiudades(){
 		render Ciudad.findAllByDepartamento(params.departamento) as JSON
 	}
+
 	def cargarMedicoR(){
 		render MedicoRemitente.list(sort:"nombre", order:"asc") as JSON
 	}
+
 	def cargarMaterialRemitido(){
 		render MaterialRemitido.list(sort:"nombreDelMaterial", order:"asc") as JSON
 	}
+
 	def cargarDxClinicos(){
 		render MoldeDiagnosticoClinico.list(sort:"nombre", order:"asc") as JSON
 	}
+
 	def cargarResidentes(){
 		render Residente.list(sort:"nombres", order:"asc") as JSON
 	}
+
 	def cargarCitologos(){
 		render Citologo.list(sort:"nombres", order:"asc") as JSON
 	}
 
-
-
 	def registrarCaso(){
 		
-		System.out.println(params)
 		Paciente p
 		Servicio servicio
 		IPS ips
@@ -155,13 +159,11 @@ class CasoController {
 		Citologo citologo
 		String idCaso
 
-
 		try{
 			if(!params.citologo.equals("--")){
 				citologo= Citologo.get(params.citologo)
 			}
 			p = Paciente.findByNumeroDeIdentificacion(params.numeroDeIdentificacion)
-
 			servicio = Servicio.get(params.servicio)
 			ips = IPS.get(params.ips)
 			eps = EPS.get(params.eps)
@@ -173,11 +175,8 @@ class CasoController {
 			diagnosticoClinico = MoldeDiagnosticoClinico.get(params.dxClinico).nombre
 			patologoAsignado = PatologoProfesional.get(params.patologoAsignado)
 			estadoDelCaso = "Registrado"
-			System.out.println(params.patologoMicro.equals("--"))
 			if(!params.patologoMicro.equals("--")){
 				if(params.patologoMicro.contains("residente")){
-					System.out.println("el de la micro es residente")
-					System.out.println(params.patologoMicro.substring(0,params.patologoMicro.indexOf(",")))
 					patologoMicro = Residente.get(params.patologoMicro.substring(0,params.patologoMicro.indexOf(",")))
 				}
 				else{
@@ -186,8 +185,6 @@ class CasoController {
 			}
 			if(!params.patologoMacro.equals("--")){
 				if(params.patologoMacro.contains("residente")){
-					System.out.println("el de la macro es residente")
-					System.out.println(params.patologoMicro.substring(0,params.patologoMicro.indexOf(",")))
 					patologoMacro = Residente.get(params.patologoMacro.substring(0,params.patologoMacro.indexOf(",")))
 				}
 				else{
@@ -195,8 +192,6 @@ class CasoController {
 					patologoMacro = PatologoProfesional.get(params.patologoMacro.substring(0,params.patologoMacro.indexOf(",")))
 				}
 			}
-
-			println "pasa el primer try **************************"
 		}
 		catch(Exception e){
 			println e.getMessage()
@@ -207,7 +202,6 @@ class CasoController {
 		if(params.tipoDeCaso.equals("Citologia")){
 			def nuevaCitologia
 			try{
-
 				nuevaCitologia = new Citologia(paciente: p, servicio: servicio, ips: ips, eps: eps,
 				medicoRemitente: medicoRemitente, materialRemitido: materialRemitido, historiaClinica: historiaClinica,
 				ciudad:ciudad, fechaDeRadicado: fechaDeRadicado, diagnosticoClinico: diagnosticoClinico,
@@ -215,17 +209,14 @@ class CasoController {
 				def year = Calendar.getInstance().get(Calendar.YEAR);
 				def lastCitologia = Citologia.list(sort:"id", order:"desc", max:1)? Citologia.list(sort:"id", order:"desc", max:1)[0]:null
 				def consecutivo = lastCitologia?Integer.parseInt(lastCitologia.idCaso.substring(lastCitologia.idCaso.lastIndexOf("-")+1))+1:"1"
-				
 				idCaso = ips.sigla.trim()+"-CG-"+ year+ "-" + consecutivo
-				System.out.println(idCaso)
 				nuevaCitologia.setIdCaso(idCaso)
-				nuevaCitologia.save(flush:true)
+				nuevaCitologia.save(flush:true, failOnError:true)
+				p.setEdad(params.edad?params.edad:null)
 			}
 			catch(Exception e){
-				System.out.println("Hubo un error  "+ e.getMessage())
 				render status:400, text:e.getMessage()
 			}
-			System.out.println("Es una citología")
 			render nuevaCitologia.idCaso
 			return
 		}
@@ -241,20 +232,16 @@ class CasoController {
 				def year = Calendar.getInstance().get(Calendar.YEAR);
 				def lastCitometria = Citometria.list(sort:"id", order:"desc", max:1)? Citometria.list(sort:"id", order:"desc", max:1)[0]:null
 				def consecutivo = lastCitometria?Integer.parseInt(lastCitometria.idCaso.substring(lastCitometria.idCaso.lastIndexOf("-")+1))+1:"1"
-				
 				idCaso = ips.sigla.trim()+"-CT-"+ year+ "-" + consecutivo
-				System.out.println(idCaso)
 				nuevaCitometria.setIdCaso(idCaso)
+				nuevaCitometria.save(flush:true, failOnError:true)
+				p.setEdad(params.edad?params.edad:null)
 
-				nuevaCitometria.save(flush:true)
 			}
 			catch(Exception e){
-				System.out.println("Hubo un error  "+ e)
 				render status:400, text:e.getMessage()
 				return
 			}
-
-			System.out.println("Es una citometría")
 			render nuevaCitometria.idCaso
 		}
 		if(params.tipoDeCaso.equals("Quirurgico")){
@@ -268,18 +255,16 @@ class CasoController {
 				def year = Calendar.getInstance().get(Calendar.YEAR);
 				def lastQuirurgico = Quirurgico.list(sort:"id", order:"desc", max:1)? Quirurgico.list(sort:"id", order:"desc", max:1)[0]:null
 				def consecutivo = lastQuirurgico?Integer.parseInt(lastQuirurgico.idCaso.substring(lastQuirurgico.idCaso.lastIndexOf("-")+1))+1:"1"
-				
 				idCaso = ips.sigla.trim()+"-QR-"+ year+ "-" + consecutivo
-				System.out.println(idCaso)
 				nuevoQuirurgico.setIdCaso(idCaso)
-				nuevoQuirurgico.save(flush:true)
+				nuevoQuirurgico.save(flush:true, failOnError:true)
+				p.setEdad(params.edad?params.edad:null)
+
 			}
 			catch(Exception e){
-				System.out.println("Hubo un error  "+ e)
 				render status:400, text:e.getMessage()
 
 			}
-			System.out.println("Es un Quirurgico")
 			render nuevoQuirurgico.idCaso
 			return
 		}
@@ -296,21 +281,16 @@ class CasoController {
 				def lastNecropsia = Necropsia.list(sort:"id", order:"desc", max:1)? Necropsia.list(sort:"id", order:"desc", max:1)[0]:null
 				def consecutivo = lastNecropsia?Integer.parseInt(lastNecropsia.idCaso.substring(lastNecropsia.idCaso.lastIndexOf("-")+1))+1:"1"
 				idCaso = ips.sigla.trim()+"-NE-"+ year+ "-" +consecutivo
-				System.out.println(idCaso)
 				nuevaNecropsia.setIdCaso(idCaso)
-
-				nuevaNecropsia.save(flush:true)
+				nuevaNecropsia.save(flush:true, failOnError:true)
+				p.setEdad(params.edad?params.edad:null)
 			}
 			catch(Exception e){
-				System.out.println("Hubo un error  "+ e.getMessage())
 				render status:400, text:e.getMessage()
 			}
-			System.out.println("Es una necropsia")
 			render nuevaNecropsia.idCaso
 		}
 	}
-
-
 
 	def revisarFechaDeNacimiento(){
 		Paciente p = Paciente.findByNumeroDeIdentificacion( params.numeroDeDocumento)
@@ -329,14 +309,9 @@ class CasoController {
 		}
 	}
 
-
-
-
 	def verificarDocumento(){
 
-		println params
 		Paciente p = Paciente.findByNumeroDeIdentificacion( params.numeroDeDocumento)
-
 		if(p!=null){
 			System.out.println("el paciente ya existe")
 			render "True"
@@ -371,8 +346,6 @@ class CasoController {
 		def results = []
     	def fechaInicial = params.rango?Date.parse('dd/MM/yyyy', params.rango.split(" - ")[0]):new Date()
     	def fechaFinal = params.rango?Date.parse('dd/MM/yyyy', params.rango.split(" - ")[1]).plus(1):new Date()
-
-		
 		def pacientes = Paciente.findAllByNumeroDeIdentificacionLikeAndPrimerApellidoLikeAndPrimerNombreLikeAndSegundoApellidoLike(params.documentoDeIdentificacion?params.documentoDeIdentificacion.toUpperCase()+"%":'%', params.primerApellido?params.primerApellido.toUpperCase()+"%":'%', params.primerNombre?params.primerNombre.toUpperCase()+"%":'%', params.segundoApellido?params.segundoApellido.toUpperCase()+"%":'%')
 		//def pacientes = Paciente.findAllByNumeroDeIdentificacionLikeAndPrimerApellidoLike('%', '%', '%')
 		println pacientes
@@ -440,7 +413,7 @@ class CasoController {
 			render view:'/notfound'
 			return
 		}
-		render view:"macrodescripcion", model:[caso:caso, tipo:caso.getClass()]
+		render view:"macrodescripcion", model:[caso:caso, tipo:caso.getClass(), macrodescripciones: MoldeDescripcionMacroscopica.list(sort:"nombreClave", order:"asc"), microdescripciones: MoldeDescripcionMicroscopica.list(sort:"nombreClave", order:"asc")]
 		return 
 	}
 
