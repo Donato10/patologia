@@ -3,7 +3,7 @@ package com.model
 class Patologo {
 
 
-	public String  obtenerNombreCompleto(){
+	public String  getNombreCompleto(){
 		return "Sin nombre"
 	}
     static constraints = {

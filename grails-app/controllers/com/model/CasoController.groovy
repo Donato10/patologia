@@ -2,6 +2,9 @@ package com.model
 import com.security.User
 import grails.plugin.springsecurity.annotation.Secured
 import grails.converters.JSON
+import java.text.SimpleDateFormat
+import java.text.DateFormat
+
 
 @Secured(["ROLE_SECRETARIA", 'ROLE_PATOLOGO'])
 class CasoController {
@@ -14,7 +17,10 @@ class CasoController {
 	}
 
 	def nuevoCaso(){
-		render view:'nuevoCaso', model:[today:new Date()]
+		def materialRemitido = MaterialRemitido.list(sort:"nombreDelMaterial", order:"asc")
+		println materialRemitido.size()
+		def dxClinicos = MoldeDiagnosticoClinico.list(sort:"nombre", order:"asc")
+		render view:'nuevoCaso', model:[today:new Date(), materialRemitido:materialRemitido, dxClinicos:dxClinicos]
 	}
 
 	def registrarPaciente(){
@@ -61,6 +67,10 @@ class CasoController {
 			return
 			}
 			else{
+				println params.fechaDeNacimiento
+				DateFormat sdf =  new SimpleDateFormat('dd/MM/yyyy')
+				Date fechaDeNacimiento = sdf.parse(params.fechaDeNacimiento.trim())
+				println fechaDeNacimiento.toString()+"******"
 				Paciente nuevoPaciente = new Paciente(
 						numeroDeIdentificacion : params.numeroDeIdentificacion?params.numeroDeIdentificacion.trim():"",
 						regimenDeSalud : params.regimen?params.regimen.trim():"",
@@ -147,10 +157,10 @@ class CasoController {
 		IPS ips
 		EPS eps
 		MedicoRemitente medicoRemitente
-		MaterialRemitido materialRemitido
 		String historiaClinica
 		Ciudad ciudad
 		Date fechaDeRadicado
+		String materialRemitido
 		String diagnosticoClinico
 		PatologoProfesional patologoAsignado
 		String estadoDelCaso = "Registrado"
@@ -158,8 +168,13 @@ class CasoController {
 		Patologo patologoMacro
 		Citologo citologo
 		String idCaso
+		String errors ="<ul>"
+
 
 		try{
+			if(params.citologo.equals("--") && params.tipoDeCaso.equals("Citologia")){
+				errors+="<li>Debe escoger un citologo</li>"
+			}
 			if(!params.citologo.equals("--")){
 				citologo= Citologo.get(params.citologo)
 			}
@@ -168,20 +183,26 @@ class CasoController {
 			ips = IPS.get(params.ips)
 			eps = EPS.get(params.eps)
 			medicoRemitente = MedicoRemitente.get(params.medicoRemitente)
-			materialRemitido = MaterialRemitido.get(params.materialRemitido)
+			materialRemitido = params.materialRemitido
 			historiaClinica = params.historiaClinica
 			ciudad = Ciudad.findByCiudadAndDepartamento(params.ciudadDeResidencia, params.departamentoDeResidencia)
 			fechaDeRadicado = Date.parse('dd/MM/yyyy',params.fechaDeRadicado)
-			diagnosticoClinico = MoldeDiagnosticoClinico.get(params.dxClinico).nombre
+			diagnosticoClinico = params.dxClinico
 			patologoAsignado = PatologoProfesional.get(params.patologoAsignado)
 			estadoDelCaso = "Registrado"
-			if(!params.patologoMicro.equals("--")){
+			if(params.patologoMicro.equals("--") && !params.tipoDeCaso.equals("Citologia")){
+				errors+="<li>Debe escoger un patólogo para la microdescripción</li>"
+			}
+			if(!params.patologoMicro.equals("--") ){
 				if(params.patologoMicro.contains("residente")){
 					patologoMicro = Residente.get(params.patologoMicro.substring(0,params.patologoMicro.indexOf(",")))
 				}
 				else{
 					patologoMicro = PatologoProfesional.get(params.patologoMicro.substring(0,params.patologoMicro.indexOf(",")))
 				}
+			}
+			if(params.patologoMacro.equals("--") && !params.tipoDeCaso.equals("Citologia")){
+				errors+="<li>Debe escoger un patólogo para la macrodescripción</li>"
 			}
 			if(!params.patologoMacro.equals("--")){
 				if(params.patologoMacro.contains("residente")){
@@ -194,7 +215,6 @@ class CasoController {
 			}
 		}
 		catch(Exception e){
-			println e.getMessage()
 			render status:400, text:e.getMessage()
 			return
 		}
@@ -211,11 +231,22 @@ class CasoController {
 				def consecutivo = lastCitologia?Integer.parseInt(lastCitologia.idCaso.substring(lastCitologia.idCaso.lastIndexOf("-")+1))+1:"1"
 				idCaso = ips.sigla.trim()+"-CG-"+ year+ "-" + consecutivo
 				nuevaCitologia.setIdCaso(idCaso)
+				if(!nuevaCitologia.validate() || errors!="<ul>"){
+					def fields = grailsApplication.getDomainClass('com.model.Citologia').persistentProperties.collect { it.name }
+		    		for(field in fields){
+		    			if(message(error: nuevaCitologia.errors.getFieldError(field))!="")
+		    				errors+= "<li>"+message(error: nuevaCitologia.errors.getFieldError(field))+"</li>"
+		    		}
+		    		errors+="</ul>"
+					render status:400, text:errors
+					return
+				}
 				nuevaCitologia.save(flush:true, failOnError:true)
 				p.setEdad(params.edad?params.edad:null)
 			}
 			catch(Exception e){
 				render status:400, text:e.getMessage()
+				return
 			}
 			render nuevaCitologia.idCaso
 			return
@@ -234,6 +265,16 @@ class CasoController {
 				def consecutivo = lastCitometria?Integer.parseInt(lastCitometria.idCaso.substring(lastCitometria.idCaso.lastIndexOf("-")+1))+1:"1"
 				idCaso = ips.sigla.trim()+"-CT-"+ year+ "-" + consecutivo
 				nuevaCitometria.setIdCaso(idCaso)
+				if(!nuevaCitometria.validate() || errors!="<ul>"){
+					def fields = grailsApplication.getDomainClass('com.model.Citometria').persistentProperties.collect { it.name }
+		    		for(field in fields){
+		    			if(message(error: nuevaCitometria.errors.getFieldError(field))!="")
+		    				errors+= "<li>"+message(error: nuevaCitometria.errors.getFieldError(field))+"</li>"
+		    		}
+		    		errors+="</ul>"
+					render status:400, text:errors
+					return
+				}
 				nuevaCitometria.save(flush:true, failOnError:true)
 				p.setEdad(params.edad?params.edad:null)
 
@@ -243,6 +284,7 @@ class CasoController {
 				return
 			}
 			render nuevaCitometria.idCaso
+			return
 		}
 		if(params.tipoDeCaso.equals("Quirurgico")){
 			def nuevoQuirurgico
@@ -257,15 +299,60 @@ class CasoController {
 				def consecutivo = lastQuirurgico?Integer.parseInt(lastQuirurgico.idCaso.substring(lastQuirurgico.idCaso.lastIndexOf("-")+1))+1:"1"
 				idCaso = ips.sigla.trim()+"-QR-"+ year+ "-" + consecutivo
 				nuevoQuirurgico.setIdCaso(idCaso)
+				if(!nuevoQuirurgico.validate() || errors!="<ul>"){
+					def fields = grailsApplication.getDomainClass('com.model.Quirurgico').persistentProperties.collect { it.name }
+		    		for(field in fields){
+		    			if(message(error: nuevoQuirurgico.errors.getFieldError(field))!="")
+		    				errors+= "<li>"+message(error: nuevoQuirurgico.errors.getFieldError(field))+"</li>"
+		    		}
+		    		errors+="</ul>"
+					render status:400, text:errors
+					return
+				}
 				nuevoQuirurgico.save(flush:true, failOnError:true)
 				p.setEdad(params.edad?params.edad:null)
 
 			}
 			catch(Exception e){
 				render status:400, text:e.getMessage()
-
+				return
 			}
 			render nuevoQuirurgico.idCaso
+			return
+		}
+		if(params.tipoDeCaso.equals("CitologiaN")){
+			println "Entra a citoN"
+			def nuevaCitologiaN
+			try{
+				nuevaCitologiaN = new CitologiaN(paciente: p, servicio: servicio, ips: ips, eps: eps,
+				medicoRemitente: medicoRemitente, materialRemitido: materialRemitido, historiaClinica: historiaClinica,
+				ciudad:ciudad, fechaDeRadicado: fechaDeRadicado, diagnosticoClinico: diagnosticoClinico,
+				patologoResponsable: patologoAsignado, estadoDelCaso: estadoDelCaso, idCaso : "1",
+				patologoResponsableDeLaMacroDescripcion: patologoMacro, patologoResponsableDeLaMicroDescripcion:patologoMicro)
+				def year = Calendar.getInstance().get(Calendar.YEAR);
+				def lastCitologiaN = CitologiaN.list(sort:"id", order:"desc", max:1)? CitologiaN.list(sort:"id", order:"desc", max:1)[0]:null
+				def consecutivo = lastCitologiaN?Integer.parseInt(lastCitologiaN.idCaso.substring(lastCitologiaN.idCaso.lastIndexOf("-")+1))+1:"1"
+				idCaso = ips.sigla.trim()+"-CNG-"+ year+ "-" + consecutivo
+				nuevaCitologiaN.setIdCaso(idCaso)
+				if(!nuevaCitologiaN.validate() || errors!="<ul>"){
+					def fields = grailsApplication.getDomainClass('com.model.CitologiaN').persistentProperties.collect { it.name }
+		    		for(field in fields){
+		    			if(message(error: nuevaCitologiaN.errors.getFieldError(field))!="")
+		    				errors+= "<li>"+message(error: nuevaCitologiaN.errors.getFieldError(field))+"</li>"
+		    		}
+		    		errors+="</ul>"
+					render status:400, text:errors
+					return
+				}
+				nuevaCitologiaN.save(flush:true, failOnError:true)
+				p.setEdad(params.edad?params.edad:null)
+
+			}
+			catch(Exception e){
+				render status:400, text:e.getMessage()
+				return 
+			}
+			render nuevaCitologiaN.idCaso
 			return
 		}
 		if(params.tipoDeCaso.equals("Necropsia")){
@@ -282,13 +369,25 @@ class CasoController {
 				def consecutivo = lastNecropsia?Integer.parseInt(lastNecropsia.idCaso.substring(lastNecropsia.idCaso.lastIndexOf("-")+1))+1:"1"
 				idCaso = ips.sigla.trim()+"-NE-"+ year+ "-" +consecutivo
 				nuevaNecropsia.setIdCaso(idCaso)
+				if(!nuevaNecropsia.validate() || errors!="<ul>"){
+					def fields = grailsApplication.getDomainClass('com.model.Necropsia').persistentProperties.collect { it.name }
+		    		for(field in fields){
+		    			if(message(error: nuevaNecropsia.errors.getFieldError(field))!="")
+		    				errors+= "<li>"+message(error: nuevaNecropsia.errors.getFieldError(field))+"</li>"
+		    		}
+		    		errors+="</ul>"
+					render status:400, text:errors
+					return
+				}
 				nuevaNecropsia.save(flush:true, failOnError:true)
 				p.setEdad(params.edad?params.edad:null)
 			}
 			catch(Exception e){
 				render status:400, text:e.getMessage()
+				return
 			}
 			render nuevaNecropsia.idCaso
+			return
 		}
 	}
 
@@ -297,15 +396,20 @@ class CasoController {
 
 		if(p!=null){
 			if(p.fechaDeNacimiento!=null)
+			{
 				render "True"
+				return
+			}
 			else{
 				System.out.println("el paciente no tiene fecha de nacimiento y debe ingresarla o ingresar la edad")
 				render "False"
+				return
 			}
 		}
 		else{
 			System.out.println("el paciente ni siquiera existe")
 			render "False"
+			return
 		}
 	}
 
@@ -315,10 +419,12 @@ class CasoController {
 		if(p!=null){
 			System.out.println("el paciente ya existe")
 			render "True"
+			return
 		}
 		else{
 			System.out.println("el paciente no existe")
 			render "False"
+			return
 		}
 	}
 
@@ -366,6 +472,9 @@ class CasoController {
 		def citologias = Citologia.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos && it.fechaDeRadicado >= fechaInicial && it.fechaDeRadicado <= fechaFinal}
 		def citometrias = Citometria.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos && it.fechaDeRadicado >= fechaInicial && it.fechaDeRadicado <= fechaFinal}
 		def necropsias = Necropsia.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos && it.fechaDeRadicado >= fechaInicial && it.fechaDeRadicado <= fechaFinal}
+		def citologiasN = CitologiaN.findAllByIdCasoLikeAndDiagnosticoClinicoLike(params.idCaso.trim().toUpperCase()+"%", params.dxClinico.trim()+"%").findAll{it.paciente in pacientes && it.patologoResponsable in patologos && it.fechaDeRadicado >= fechaInicial && it.fechaDeRadicado <= fechaFinal}
+		
+
 		println "quirurgicos: "+ quirurgicos
 		println "citologias: "+ citologias
 		println "citometrias: "+ citometrias
@@ -375,6 +484,11 @@ class CasoController {
 		if(quirurgicos.size() > 0){
 			for(quirurgico in quirurgicos){
 				results.push([idCaso:quirurgico.idCaso, estado:quirurgico.estadoDelCaso, paciente:quirurgico.paciente.primerApellido+" "+(quirurgico.paciente.segundoApellido?quirurgico.paciente.segundoApellido:"")+", "+quirurgico.paciente.primerNombre+" "+(quirurgico.paciente.segundoNombre?quirurgico.paciente.segundoNombre:""), fechaDeIngreso:quirurgico.fechaDeRadicado.format("yyyy-MM-dd"), responsable:quirurgico.patologoResponsable.apellidos+", "+quirurgico.patologoResponsable.nombres, dxClinico:quirurgico.diagnosticoClinico, tipo:"Quirurgico"])
+			}
+		}
+		if(citologiasN.size() > 0){
+			for(citologiaN in citologiasN){
+				results.push([idCaso:citologiaN.idCaso, estado:citologiaN.estadoDelCaso, paciente:citologiaN.paciente.primerApellido+" "+(citologiaN.paciente.segundoApellido?citologiaN.paciente.segundoApellido:"")+", "+citologiaN.paciente.primerNombre+" "+(citologiaN.paciente.segundoNombre?citologiaN.paciente.segundoNombre:""), fechaDeIngreso:citologiaN.fechaDeRadicado.format("yyyy-MM-dd"), responsable:citologiaN.patologoResponsable.apellidos+", "+citologiaN.patologoResponsable.nombres, dxClinico:citologiaN.diagnosticoClinico, tipo:"citologiaN"])
 			}
 		}
 		if(citologias.size() > 0){
@@ -397,7 +511,6 @@ class CasoController {
 	}
 
 	def facturar() {
-
 		User current = User.findByUsername(SecurityUtils.getSubject().getPrincipal())
 		Secretaria usuario = Secretaria.findBySecUser(current)
 		nickName = usuario.email.substring(0,usuario.email.indexOf("@"));
@@ -405,6 +518,7 @@ class CasoController {
 			nickName, idUserProf : usuario.id, idSecUser: current.id ] )
 	}
 
+	@Secured('ROLE_PATOLOGO')
 	def macrodescribir(){
 		def caso = Caso.getCaso(params.id)
 		println caso
@@ -413,8 +527,82 @@ class CasoController {
 			render view:'/notfound'
 			return
 		}
-		render view:"macrodescripcion", model:[caso:caso, tipo:caso.getClass(), macrodescripciones: MoldeDescripcionMacroscopica.list(sort:"nombreClave", order:"asc"), microdescripciones: MoldeDescripcionMicroscopica.list(sort:"nombreClave", order:"asc")]
+		render view:"macrodescripcion", model:[caso:caso, servicio:caso.getServicioId(), tipo:caso.getClass(), macrodescripciones: MoldeDescripcionMacroscopica.list(sort:"nombreClave", order:"asc"), microdescripciones: MoldeDescripcionMicroscopica.list(sort:"nombreClave", order:"asc"), materiales:MaterialRemitido.list(sort:"nombreDelMaterial", order:"asc"), dxClinicos: MoldeDiagnosticoClinico.list(sort:"nombre", order:"asc") ]
 		return 
 	}
+
+
+
+	def guardarMacroDescripcion(){
+		println params
+		def errors = "<ul>"
+		def caso  = Caso.getCaso(params.id)
+		if(!caso){
+			render status:400, text:"No fue posible encontrar el caso."
+			return
+		}
+		def servicio =  Servicio.get(Long.parseLong(params.servicio))
+		if(!servicio){
+			render status:400, text:"No fue posible encontrar el servicio."
+			return
+		}
+		
+		
+		if(caso.idCaso.contains("-CT-") || caso.idCaso.contains("-CNG")){
+
+			try{
+				caso.numeroDeTubos = Integer.parseInt(params.numeroDeTubos?params.numeroDeTubos:"0")
+			}
+			catch(NumberFormatException nfe){
+				render status:400, text:"El campo número de tubos solo admite enteros"
+				return
+			}
+		}
+		try{
+			caso.numeroDeBloques = Integer.parseInt(params.numeroDeBloques?params.numeroDeBloques:"0")
+		}
+		catch(NumberFormatException nfe){
+			render status:400, text:"El campo número de bloques solo admite enteros"
+			return
+		}
+		try{
+			caso.numeroDeLaminas = Integer.parseInt(params.numeroDeLaminas?params.numeroDeLaminas:"0")
+		}
+		catch(NumberFormatException nfe){
+			render status:400, text:"El campo número de láminas solo admite enteros"
+			return
+		}
+
+
+
+		def finalizado = Boolean.parseBoolean(params.finalizado?params.finalizado:"false")
+		caso.materialRemitido = params.materialRemitido.trim()
+		caso.servicio = servicio
+		caso.diagnosticoClinico = params.dxClinico.trim()
+		caso.descripcionMacroscopica = params.macrodescripcion.trim()
+		caso.seProcesoTodoElmaterial = Boolean.parseBoolean(params.seProcesaTodo)
+		caso.casoPrioritario = Boolean.parseBoolean(params.casoPrioritario)
+		caso.observacionesParaHistotecnologia = params.observaciones
+		if(!caso.descripcionMacroscopica && finalizado || caso.descripcionMacroscopica=="" && finalizado){
+			render status:400, text:"La descripción macroscópica no puede estar vacía"
+			return
+		}
+		if(finalizado){
+			caso.estadoDelCaso ="Macrodescrito"
+		}
+		if(!caso.validate() || errors!="<ul>"){
+			def fields = grailsApplication.getDomainClass('com.model.Necropsia').persistentProperties.collect { it.name }
+    		for(field in fields){
+    			if(message(error: nuevaNecropsia.errors.getFieldError(field))!="")
+    				errors+= "<li>"+message(error: nuevaNecropsia.errors.getFieldError(field))+"</li>"
+    		}
+    		errors+="</ul>"
+			render status:400, text:errors
+			return
+		}
+		caso.save(flush:true, failOnError:true)
+		render status:200
+	}
+
 
 }

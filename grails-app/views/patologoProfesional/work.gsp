@@ -4,9 +4,11 @@
         <div class="row">
 			<h1>Hoja de trabajo</h1>
 				<table class="table table-bordered table-condensed">
-					<thead>
-						<th class="th-pt">Id Caso</th>
+					<thead >
+						<th class="th-pt">Nº Caso</th>
+						<th class="th-pt">Documento</th>
 						<th class="th-pt">Paciente</th>
+						<th class="th-pt">Material</th>
 						<th class="th-pt">Tipo de caso</th>
 						<th class="th-pt">Fecha de radicado</th>
 						<th class="th-pt">Estado</th>
@@ -14,13 +16,14 @@
 					</thead>
 					<tbody>
 						<g:each in="${casos}" var="caso">
-							<tr style="backgorund-color: ${caso.color}">
+							<tr style="backgorund-color: ${caso.color}" >
 								<td style="background-color: ${caso.color}">${caso.idCaso}</td>
 								<td style="background-color: ${caso.color}">${caso.documento} </td>
+								<td style="background-color: ${caso.color}">${caso.nombrePaciente} </td>
+								<td style="background-color: ${caso.color}">${caso.material} </td>
 								<td style="background-color: ${caso.color}">${caso.tipo}</td>
 								<td style="background-color: ${caso.color}">${caso.fechaDeRadicado}</td>
 								<td style="background-color: ${caso.color}">${caso.estado}</td>
-								
 								<td style="background-color: ${caso.color}">
 									<g:if test='${caso.accion=="Macro"}'>
 										<g:link controller="caso" action="macrodescribir" id="${caso.id}">

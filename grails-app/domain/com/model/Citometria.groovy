@@ -14,7 +14,7 @@ class Citometria extends Caso {
 	IPS ips;
 	EPS eps;
 	MedicoRemitente medicoRemitente;
-	MaterialRemitido materialRemitido;
+	String materialRemitido;
 	String historiaClinica;
 	Ciudad ciudad;
 	Date fechaDeRadicado;
@@ -30,18 +30,20 @@ class Citometria extends Caso {
 	
 	String descripcionMacroscopica;
 	Boolean seProcesoTodoElmaterial;
-	static hasMany= [otrosPatologos:PatologoProfesional]
 	String descripcionMicroscopica;
 	Boolean casoEnJunta;
 	Boolean casoPrioritario;
 	Patologo patologoResponsableDeLaMacroDescripcion;
 	Patologo patologoResponsableDeLaMicroDescripcion;
 	String diagnosticoPatologico
-	
-	
-	
+	String observacionesParaHistotecnologia
+
 	
 	Integer numeroDeTubos;
+
+	//Informes preliminar y adicionales del caso
+	Citometria preliminar;
+	static hasMany = [adicionales: Citometria, otrosPatologos:Patologo]
 	
     static constraints = {
 		
@@ -57,9 +59,12 @@ class Citometria extends Caso {
 		fechaInterpretacion (blank:true, nullable:true)
 		fechaDeFinalizacion (blank:true, nullable:true)
 		numeroDeTubos (blank:true, nullable:true)
+		preliminar (nullable:true)
+		observacionesParaHistotecnologia (nullable:true)
 		
 		patologoResponsableDeLaMacroDescripcion (nullable:true, blank: true)
 		patologoResponsableDeLaMicroDescripcion (nullable:true, blank: true)
+		materialRemitido (blank:false,nullable:false)
     }
 	
 	static mapping = {
@@ -68,5 +73,9 @@ class Citometria extends Caso {
 		diagnosticoClinico sqlType:'text'
 		diagnosticoPatologico sqlType:'text'
 
+	}
+
+	public String getTipo(){
+		return "Citometria"
 	}
 }

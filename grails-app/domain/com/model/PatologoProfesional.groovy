@@ -35,7 +35,7 @@ class PatologoProfesional extends Patologo{
 		this.secUser = secUser;
 	}
 
-	public String obtenerNombreCompleto(){
+	public String getNombreCompleto(){
 		return "Dr (a)."+this.nombres +" "+this.apellidos
 	}
 	

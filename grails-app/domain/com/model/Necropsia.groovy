@@ -12,7 +12,7 @@ class Necropsia extends Caso {
 	IPS ips;
 	EPS eps;
 	MedicoRemitente medicoRemitente;
-	MaterialRemitido materialRemitido;
+	String materialRemitido;
 	String historiaClinica;
 	Ciudad ciudad;
 	Date fechaDeRadicado;
@@ -23,12 +23,14 @@ class Necropsia extends Caso {
 	Date fechaInterpretacion;
 	Date fechaDeFinalizacion;
 	String estadoDelCaso;
+	String observacionesParaHistotecnologia
+
 	
 	//Datos generales de caso regular
 	
 	String descripcionMacroscopica;
 	Boolean seProcesoTodoElmaterial;
-	static hasMany= [otrosPatologos:PatologoProfesional]
+	static hasMany= [otrosPatologos:Patologo]
 	String descripcionMicroscopica;
 	Boolean casoEnJunta;
 	Boolean casoPrioritario;
@@ -56,11 +58,13 @@ class Necropsia extends Caso {
 		historiaClinica (blank:true, nullable:true)
 		fechaInterpretacion (blank:true, nullable:true)
 		fechaDeFinalizacion (blank:true, nullable:true)
-		numeroDeBloques (blank:true, nullable:true)
-		numeroDeLaminas (blank:true, nullable:true)
-		
+		numeroDeBloques (blank:true, nullable:true, min:0)
+		numeroDeLaminas (blank:true, nullable:true, min:0)
 		patologoResponsableDeLaMacroDescripcion (nullable:true, blank: true)
 		patologoResponsableDeLaMicroDescripcion (nullable:true, blank: true)
+		materialRemitido(blank:false, nullable:false)
+		observacionesParaHistotecnologia (nullable:true)
+		
     }
 	static mapping = {
 		version false
@@ -70,5 +74,9 @@ class Necropsia extends Caso {
 		descripcionMicroscopica sqlType:'text'
 		comentarios sqlType:'text'
 		diagnosticoPatologico sqlType:'text'
+	}
+
+	public String getTipo(){
+		return "Necropsia"
 	}
 }

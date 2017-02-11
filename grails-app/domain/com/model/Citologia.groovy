@@ -31,6 +31,7 @@ class Citologia extends Caso {
 	Date fechaDeTomaDeLaMuestra;
 	String otrasCelulasTumorales;
 	String comentarios;
+	
 
 
 	//Datos generales de caso
@@ -40,7 +41,7 @@ class Citologia extends Caso {
 	IPS ips;
 	EPS eps;
 	MedicoRemitente medicoRemitente;
-	MaterialRemitido materialRemitido;
+	String materialRemitido;
 	String historiaClinica;
 	Ciudad ciudad;
 	Date fechaDeRadicado;
@@ -51,6 +52,12 @@ class Citologia extends Caso {
 	Date fechaDeFinalizacion;
 	String estadoDelCaso;
 	String diagnosticoPatologico;
+
+
+	//Informes preliminar y adicionales del caso
+	Citologia preliminar;
+	static hasMany = [adicionales: Citologia]
+
 
 	static constraints = {
 
@@ -83,12 +90,18 @@ class Citologia extends Caso {
 		fechaDeFinalizacion  (blank:true, nullable:true)
 		comentarios (blank:true, nullable:true)
 		diagnosticoPatologico (blank:true, nullable:true)
+		materialRemitido (blank:false, nullable:false)
+		preliminar (nullable:true)
 	}
 	static mapping = {
 		version false
 		tablePerHierarchy true
 		diagnosticoPatologico sqlType:'text'
 		diagnosticoClinico sqlType:'text'
+	}
 
+
+	public String getTipo(){
+		return "Citologia"
 	}
 }

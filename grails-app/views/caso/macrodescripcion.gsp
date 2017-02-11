@@ -8,32 +8,106 @@
 
 					<div class="row">
 						<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
-							<label for="">Documento de identidad<b style="color:red">*</b></label> <input type="text" id="documentoDeIdentidad" value="${caso.paciente.numeroDeIdentificacion}" class="form-control">
+							<label for="">Tipo de caso</label> <input type="text" id="documentoDeIdentidad" value="${caso.getTipo()}" class="form-control" readonly="">
 							<br/>
 						</div>
 
 						<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
-							<label for="">Apellidos, nombres<b style="color:red">*</b></label> <input type="text" id="nombrePaciente" value="${caso.paciente.getNombre()}" class="form-control">
+							<label for="">Fecha de radicado</label>
+							<input required="" type="text" class="form-control" value="${caso.fechaDeRadicado.format('dd/MM/yyyy')}"  id="fechaDeRadicado" readonly="" />
+							<br/>
+						</div>
+
+						<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+							<label for="">Documento de identidad</label> <input type="text" id="documentoDeIdentidad" value="${caso.paciente.numeroDeIdentificacion}" class="form-control" readonly="">
+							<br/>
+						</div>
+
+						<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+							<label for="">Servicio<b style="color:red">*</b></label>
+							<select id="servicios" name="servicios" class="form-control">
+								<option selected>--</option>
+								<script>
+									jQuery.ajax({
+										type : 'POST',
+										url : '${createLink(controller:"caso", action:"cargarServicios")}',
+										success : function(data, textStatus) {
+
+											for (var i = 0; i < data.length; i++) {
+												$("#servicios").append(
+														// Append an object to the inside of the select box
+														$("<option></option>") // Yes you can do this.
+														.text(data[i].nombre).val(
+																data[i].id));
+											}
+
+											$("#servicios").val(${caso.getServicio().id})
+										},
+										error : function(XMLHttpRequest,
+												textStatus, errorThrown) {
+										}
+									});
+								</script>
+							</select>
+							<br/>
+						</div>
+
+						<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+							<label for="">Patólogo asignado al caso</label> <input type="text" id="nombrePaciente" value="${caso.paciente.getNombre()}" class="form-control" readonly="">
+							<br/>
+						</div>
+
+						<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+							<label for="">IPS</label> <input type="text" id="ips" value="${caso.getIps().razonSocial}" class="form-control" readonly="" >
+							<br/>
+						</div>
+
+						<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+							<label for="">EPS</label> <input type="text" id="eps" value="${caso.getEps().nombre}" class="form-control" readonly="" >
+							<br/>
+						</div>
+
+						<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+							<label for="">Médico remitente</label> <input type="text" id="nombrePaciente" value="${caso.getMedicoRemitente().nombre}" class="form-control" readonly="" >
+							<br/>
+						</div>
+
+						<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+							<label for="">Material remitido<b style="color:red">*</b></label>
+							<input required="" type="text" class="form-control" value="${caso.getMaterialRemitido()}" list="materiales" id="materialRemitido"  />
+							<br/>
+						</div>
+
+						<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+							<label for="">Departamento de residencia</label>
+							<input required="" type="text" class="form-control" value="${caso.getCiudad().departamento}"  id="deptResidencia" readonly="" />
+							<br/>
+						</div>
+
+
+						<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
+							<label for="">Ciudad de residencia</label> <input type="text" id="ciudadResidencia" value="${caso.getCiudad().ciudad}" class="form-control" readonly="">
 							<br/>
 						</div>
 
 						
 						<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
-							<label for="">Fecha de radicado<b style="color:red">*</b></label>
-							<input required="" type="text" class="form-control" value="${caso.fechaDeRadicado.format('dd/MM/yyyy')}"  id="fechaDeRadicado" />
+							<label for="">Diagnóstico clínico<b style="color:red">*</b></label>
+							<input required="" type="text" class="form-control" value="${caso.getDiagnosticoClinico()}"  list="dxClinicos" id="dxClinico" />
 							<br/>
 						</div>
 
-						<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
-							<label for="">Fecha de nacimiento</label>
-							<input required="" type="text" class="form-control" value="${caso.paciente.fechaDeNacimiento?.format('dd/MM/yyyy')}"  id="fechaDeNacimiento" />
-							<br/>
-						</div>
+
 						<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
 							<label for="">Edad</label>
-							<input required="" type="text" class="form-control" value="${caso.paciente.calcularEdad()}"  id="edad" />
+							<input required="" type="text" class="form-control" value="${caso.paciente.calcularEdad()}"  id="edad" readonly="" />
 							<br/>
 						</div>
+					</div>
+
+					<div class="row">
+					<label>Historia clínica</label>
+						<textarea class="form-control" style="resize:vertical;" id="historiaClinica">${caso.getHistoriaClinica()}</textarea>
 					</div>
 				</div>
 			</div>
@@ -47,52 +121,7 @@
 				</ul>
 			
 				<div class="tab-content">
-				    <div id="macrodescripcion" class="tab-pane fade in active" style="padding:15px">
-						<button class="btn btn-pt-primary pull-right" style="margin-top:10px">Guardar</button>
-					    <div class="panel panel-pt-primary">
-							<h3>Descripción macroscópica</h3>
-							<label>Nombre</label>
-							<input type="text" list="macrodescripciones" class="form-control" id="macroClave" ${caso.estadoDelCaso=="Registrado"?"":"readonly"}/></br>
-							<label>Descripción</label>
-							<textarea id="macroDesc" class="form-control" rows="6" ${caso.estadoDelCaso=="Registrado"?"":"readonly"}></textarea>
-							<br/>
-							<div class="row">
-								<div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
-									<label>Número de bloques</label>
-									<input type="number" id="numeroDeBloques" min="1"/>
-								</div>
-								<div class="col-md-6 col-lg-6 col-sm-12 col-xs-12">
-									<label class="pull-right">Patólogo responsable: ${caso.patologoResponsableDeLaMacroDescripcion.obtenerNombreCompleto()}</label>
-								</div>
-							</div>
-							<br/>
-							<label>Observaciones</label>
-							<textarea id="ObservacionesMacro" class="form-control" rows="6" ${caso.estadoDelCaso=="Registrado"?"":"readonly"}></textarea>
-
-					    </div>
-				    </div>
-				    <div id="menu5" class="tab-pane fade">
-				      <h3>Solicitudes</h3>
-				      <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-				    </div>
-				    <div id="microdescripcion" class="tab-pane fade">
-				    	<button class="btn btn-pt-primary pull-right" style="margin-top:10px">Guardar</button>
-					    <div class="panel panel-pt-primary">
-							<h3>Descripción microscópica</h3>
-							<label>Nombre</label>
-							<input type="text" list="microdescripciones" class="form-control" id="microClave" ${caso.estadoDelCaso=="Procesado"?"":"readonly"}/></br>
-							<label>Descripción</label>
-							<textarea id="microDesc" class="form-control" rows="10" ${caso.estadoDelCaso=="Procesado"?"":"readonly"}></textarea>
-					    </div>
-				    </div>
-				    <div id="menu3" class="tab-pane fade">
-				      <h3>Dx patológicos</h3>
-				      <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-				    </div>
-				    <div id="facturacion" class="tab-pane fade">
-				      <h3>Dx patológicos</h3>
-				      <p>Eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
-				    </div>
+					<g:render template="macro"/>
 				</div>
 			</div>
         </div>
@@ -108,8 +137,62 @@
 				<option value="${micro.nombreClave}" descripcion="${micro.descripcion}" >
 		  	</g:each>
 		</datalist>
+
+		<datalist id="materiales">
+		${materiales.size()}
+			<g:each in="${materiales}" var="material">
+				<option value="${material.nombreDelMaterial}" >
+			</g:each>
+		</datalist>
+
+		<datalist id="dxClinicos">
+			<g:each in="${dxClinicos}" var="dxClinico">
+				<option value="${dxClinico.nombre}" >
+			</g:each>
+		</datalist>
         <!-- /page content -->
+
+        <!-- Modal de éxitos -->
+		<div id="successModal" class="modal fade" role="dialog">
+		  <div class="modal-dialog">
+
+		    <!-- Modal content-->
+		    <div class="modal-content">
+		      <div class="modal-header alert alert-pt-primary">
+		        <button type="button" class="close" data-dismiss="modal">&times;</button>
+		        <h4 class="modal-title">Exitoso</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p id="successMessage"></p>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+
+		<!-- Modal de errores -->
+		<div id="errorModal" class="modal fade" role="dialog">
+		  <div class="modal-dialog">
+		    <!-- Modal content-->
+		    <div class="modal-content">
+		      <div class="modal-header alert alert-danger">
+		        <button type="button" class="close" data-dismiss="modal">&times;</button>
+		        <h4 class="modal-title">Error</h4>
+		      </div>
+		      <div class="modal-body">
+		        <p id="errorMessage"></p>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+
+
+
+
+
     <g:render template="/layouts/footer"/>
+
+    
 <script type="text/javascript">
 	$("#macroClave").on("input", function(){
 		$("#macroDesc").val(($('[value="'+$(this).val()+'"]').attr("descripcion")))
@@ -117,4 +200,19 @@
 	$("#microClave").on("input", function(){
 		$("#microDesc").val(($('[value="'+$(this).val()+'"]').attr("descripcion")))
 	});
+
+	$(".check-proceso-macro").change(function(){
+		if($(this).prop("checked")){
+			$(".check-proceso-macro").not(this).each(function(){
+				$(this).prop("checked", false)
+			})
+		}
+		else{
+			$(".check-proceso-macro").not(this).each(function(){
+				$(this).prop("checked", true)
+			})
+		}
+
+	})
+
 </script>

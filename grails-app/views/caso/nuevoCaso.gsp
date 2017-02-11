@@ -14,6 +14,8 @@
 							<option value="Citometria">Citometría</option>
 							<option value="Necropsia">Necropsia</option>
 							<option value="Citologia">Citología</option>
+							<option value="CitologiaN">Citología no ginecológica</option>
+
 						</select>
 						<br/>
 					</div>
@@ -181,23 +183,7 @@
 
 					<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
 						<label for="">Material remitido<b style="color:red">*</b></label> 
-						<select id="materialRemitido" name="materialRemitido" class="form-control">
-							<option value="--" selected>--</option>
-							<script>
-								jQuery.ajax({
-									type : 'POST',
-									url : 'cargarMaterialRemitido',
-									success : function(data, textStatus) {
-										for (var i = 0; i < data.length; i++) {
-											$("#materialRemitido").append($("<option></option>").text(data[i].nombreDelMaterial).val(data[i].id));
-										}
-									},
-									error : function(XMLHttpRequest,textStatus, errorThrown) {
-										alert("eror")
-									}
-								});
-							</script>
-						</select>
+						<input list="materiales" id="materialRemitido" class="form-control" name="materialRemitido"/>
 						</br>
 					</div>
 
@@ -232,22 +218,7 @@
 
 					<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
 						<label for="">Diagnóstico clínico<b style="color:red">*</b></label>
-						<select id="dxClinico"name="dxClinico" class="form-control">
-							<option value="--" selected>--</option>
-							<script>
-								jQuery.ajax({
-									type : 'POST',
-									url : 'cargarDxClinicos',
-									success : function(data, textStatus) {
-										for (var i = 0; i < data.length; i++) {
-											$("#dxClinico").append($("<option></option>").text(data[i].nombre).val(data[i].id));
-										}
-									},
-									error : function(XMLHttpRequest,textStatus, errorThrown) {
-									}
-								});
-							</script>
-						</select>
+						<input list="dxClinicos" id="dxClinico" name="dxClinico" class="form-control"/>
 						</br>
 					</div>
 				</div>
@@ -258,7 +229,7 @@
 				<div class="row">
 					<div class="col-lg-12 col-md-12 col-xs-12 col-sm-12">
 						<label for="">Historia clínica</label>
-						<textArea id="historiaClinica" class="form-control"></textArea>
+						<textArea id="historiaClinica" class="form-control" style="resize:vertical;"></textArea>
 					</div>
 				</div>
 			</div>
@@ -404,6 +375,18 @@
 	    </div>
 	  </div>
 	</div>
+
+	<datalist id="materiales">
+		<g:each in="${materialRemitido}" var="material">
+			<option value="${material.nombreDelMaterial}" >
+		</g:each>
+	</datalist>
+
+	<datalist id="dxClinicos">
+		<g:each in="${dxClinicos}" var="dxClinico">
+			<option value="${dxClinico.nombre}" >
+		</g:each>
+	</datalist>
 
 	<asset:javascript src="model/nuevoCaso.js"/>
 	<asset:javascript src="model/validationSNuevoCaso.js"/>

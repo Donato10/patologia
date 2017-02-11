@@ -17,9 +17,19 @@ class Caso {
     	if(Citologia.get(id)){
     		return Citologia.get(idCaso)
     	}
+        if(CitologiaN.get(id)){
+            return CitologiaN.get(idCaso)
+        }
     	if(Necropsia.get(id)){
     		return Necropsia.get(idCaso)
     	}
     	return null
     }
+
+
+    public String getTipo(){
+        return "Caso"
+    }
+
+  
 }

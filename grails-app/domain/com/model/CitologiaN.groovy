@@ -2,7 +2,7 @@ package com.model
 
 import java.util.Date;
 
-class Quirurgico extends Caso  {
+class CitologiaN extends Caso  {
 
 	//datos generales de caso
 
@@ -24,6 +24,7 @@ class Quirurgico extends Caso  {
 	String estadoDelCaso;
 	String observacionesParaHistotecnologia
 
+
 	//Datos generales de caso regular
 
 	String descripcionMacroscopica;
@@ -36,13 +37,13 @@ class Quirurgico extends Caso  {
 	String diagnosticoPatologico
 
 	//Datos propios del caso
-	Integer numeroDeBloques;
+	Integer numeroDeTubos;
 	Integer numeroDeLaminas;
+	Integer numeroDeBloques;
 
 	//Informes preliminar y adicionales del caso
-	Quirurgico preliminar;
-	static hasMany = [adicionales: Quirurgico, otrosPatologos:Patologo]
-
+	CitologiaN preliminar;
+	static hasMany = [adicionales: CitologiaN, otrosPatologos:Patologo]
 
 	static constraints = {
 		idCaso (unique:true, blank:false, nullable: false)
@@ -56,14 +57,14 @@ class Quirurgico extends Caso  {
 		historiaClinica (blank:true, nullable:true)
 		fechaInterpretacion (blank:true, nullable:true)
 		fechaDeFinalizacion (blank:true, nullable:true)
-		numeroDeBloques (blank:true, nullable:true, min:0)
 		numeroDeLaminas (blank:true, nullable:true, min:0)
+		numeroDeTubos (blank:true, nullable:true, min:0)
+		numeroDeBloques (blank:true, nullable:true, min:0)
 		materialRemitido (blank:true, nullable:true)
-		preliminar(nullable:true)
+		preliminar (nullable:true)
 		patologoResponsableDeLaMacroDescripcion (nullable:true, blank: true)
 		patologoResponsableDeLaMicroDescripcion (nullable:true, blank: true)
 		observacionesParaHistotecnologia (nullable:true)
-		
 	}
 	static mapping = {
 		version false
@@ -75,6 +76,6 @@ class Quirurgico extends Caso  {
 	}
 
 	public String getTipo(){
-		return "Quirurgico"
+		return "Citologia no ginecológica"
 	}
 }

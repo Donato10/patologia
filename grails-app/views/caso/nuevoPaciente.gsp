@@ -11,7 +11,7 @@
 					</div>
 
 					<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
-						<label for="">Fecha de nacimiento </label> <input required=""  type="text" class="date-picker form-control" placeholder="dd/mm/aaaa" id="fechaDeNacimiento" /><br/>
+						<label for="">Fecha de nacimiento </label> <input required=""  type="text" class="date-picker form-control" placeholder="dd/mm/aaaa" id="fechaDeNacimiento" readonly="" /><br/>
 					</div>
 
 					<div class="col-lg-6 col-md-6 col-xs-12 col-sm-12">
@@ -157,7 +157,7 @@
         	autoUpdateInput: false,
         	singleDatePicker: true,
 		    "showDropdowns": true,
-		    "maxDate": "${today.format('dd/MM/yyyy')}",
+		    "maxDate": "${today.format('DD/MM/YYYY')}",
         	calender_style: "picker_4",
         	"locale": {
 		        "format": "DD/MM/YYYY",
@@ -190,7 +190,7 @@
 		        ],
 	    	},
         }, function(start, end, label) {
-        	$("#fechaDeNacimiento").val(start.format('MM/DD/YYYY'));
+        	$("#fechaDeNacimiento").val(start.format('DD/MM/YYYY'));
         });
       });
     </script>
