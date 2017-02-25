@@ -34,7 +34,7 @@
 										<button class="btn btn-pt-primary"> Microdescribir <i class="fa fa-pencil"></i></button>
 									</g:elseif>
 									<g:elseif test='${caso.accion=="Alertar"}'>
-										<button class="btn btn-pt-primary"> Enviar alerta <i class="fa fa-bell"></i></button>
+										<button class="btn btn-pt-primary" onclick="showAlertModal(${caso.id}, '${caso.idCaso}')"> Enviar alerta <i class="fa fa-bell"></i></button>
 									</g:elseif>
 									<g:elseif test='${caso.accion=="Revisar"}'>
 										<button class="btn btn-pt-primary"> Revisar <i class="fa fa-eye"></i></button>
@@ -47,4 +47,80 @@
 			</div>        
         </div>
         <!-- /page content -->
+
+        <!-- Modal de creación de alertas -->
+		<div id="newAlertModal" class="modal fade" role="dialog">
+		  <div class="modal-dialog">
+
+		    <!-- Modal content-->
+		    <div class="modal-content">
+		      <div class="modal-header alert alert-pt-primary">
+		        <button type="button" class="close" data-dismiss="modal">&times;</button>
+		        <h4 class="modal-title" id="alert-modal-title"></h4>
+		      </div>
+		      <div class="modal-body">
+		      	<label>Nivel de urgencia</label>
+		      	<br/>
+		      	<div class="btn-group" data-toggle="buttons" id="nivel">
+					  <label class="btn btn-default nivel-btn active">
+					    <input type="radio" autocomplete="off" icon-class="fa fa-flag" icon-color="green" checked nivel="1"> Bajo
+					  </label>
+					  <label class="btn nivel-btn btn-default">
+					    <input  type="radio" autocomplete="off" icon-class="fa fa-exclamation-triangle" icon-color="orange" nivel="2"> Medio
+					  </label>
+					  <label class="btn nivel-btn btn-default">
+					    <input type="radio" autocomplete="off" icon-class="fa fa-exclamation-circle" icon-color="red" nivel="3"> Alto
+					  </label>
+				</div>
+				<i class="fa fa-flag" id="nivel-icon" style="color:green"></i>
+				<br/>
+				<br/>
+				<label>Texto de la alerta</label>
+				<textarea class="form-control" rezise="vertical" id="newAlertText"></textarea>
+		      </div>
+		      <div class="modal-footer">
+		      	<button class="btn btn-pt-primary pull-right" onclick="crearAlerta()">Listo, enviar</button>
+		      	<button class="btn btn-default pull-right" data-dismiss="modal">Cancelar</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
     <g:render template="/layouts/footer"/>
+
+		<script type="text/javascript">
+			var curCaseAlertId = null
+			var nivel =1
+			function showAlertModal(id, name){
+				curCaseAlertId = id
+				$("#alert-modal-title").text("Nueva alerta "+name)
+				$('#newAlertModal').modal('show')
+			}
+
+
+			$('.nivel-btn').click(function(){
+				$('#nivel-icon').removeClass()
+				$('#nivel-icon').addClass($(this).find('input').attr('icon-class'))
+				$('#nivel-icon').css('color', $(this).find('input').attr('icon-color'))
+				nivel = $(this).find('input').attr('nivel')
+			})
+
+			function crearAlerta(){
+				$('#newAlertModal').modal('hide')
+				jQuery.ajax({
+					type:'POST',
+					data:{
+						newAlertText:$("#newAlertText").val(),
+						id:curCaseAlertId,
+						nivel:nivel
+					},
+					url:"${createLink(controller:alert, action:crear)}",
+					success:function(){
+						alert("exitoso")
+					},
+					error:function(status){
+						alert(status.responseText)
+					}
+
+				})
+			}
+		</script>

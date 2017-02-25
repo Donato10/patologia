@@ -72,6 +72,8 @@ class Citometria extends Caso {
 		tablePerHierarchy false
 		diagnosticoClinico sqlType:'text'
 		diagnosticoPatologico sqlType:'text'
+		descripcionMacroscopica sqlType:'text'
+		descripcionMicroscopica sqlType:'text'
 
 	}
 
